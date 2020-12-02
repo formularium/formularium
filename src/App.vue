@@ -1,14 +1,56 @@
 
 <template>
   <div id="app">
-    <FormRenderer id="renderer" :code="code"  @contextUpdate="updateContext"></FormRenderer>
-    <BlocklyComponent id="blockly2" :options="options" ref="foo"></BlocklyComponent>
-    <p id="code">
-      <button v-on:click="showCode()">Run</button>
-      <pre v-html="code"></pre>
-      <pre id="context">{{context}}</pre>
+    <v-app>
+      <v-main>
+        <div id="renderer">
 
-    </p>
+          <FormRenderer  :code="code"  @contextUpdate="updateContext" @jsonSchemaUpdate="updatejsonSchema"></FormRenderer>
+
+        </div>
+    <BlocklyComponent id="blockly2" :options="options" ref="foo"></BlocklyComponent>
+      <div id="code">
+          <div id="control">
+            <v-btn v-on:click="showCode()" class="mx-2" fab dark small color="primary">
+            <v-icon dark>mdi-play</v-icon>
+          </v-btn>
+          <v-btn v-on:click="reset()" class="mx-2" fab dark small color="primary">
+            <v-icon dark>mdi-stop</v-icon>
+          </v-btn>
+          </div>
+
+          <v-tabs v-model="tab">
+            <v-tab>Context</v-tab>
+            <v-tab>JSONSchema</v-tab>
+            <v-tab>JS</v-tab>
+          </v-tabs>
+          <v-tabs-items v-model="tab">
+            <v-tab-item>
+                <code-highlight language="json" class="code-preview">
+                    {{context}}
+                </code-highlight>
+              <pre id="context"></pre>
+            </v-tab-item>
+            <v-tab-item>
+                 <code-highlight language="json" class="code-preview">
+
+                        {{jsonSchema}}
+
+                </code-highlight>
+            </v-tab-item>
+            <v-tab-item>
+                 <code-highlight language="javascript" class="code-preview">
+                         {{code}}
+                </code-highlight>
+            </v-tab-item>
+
+          </v-tabs-items>
+
+
+      </div>
+
+
+      </v-main></v-app>
   </div>
 </template>
 
@@ -21,16 +63,21 @@ import * as Blockly from 'blockly/core';
 import './blocks/context';
 import './blocks/fields';
 import FormRenderer from "./components/FormRenderer";
+import "vue-code-highlight/themes/prism-coy.css";
+import CodeHighlight from "vue-code-highlight/src/CodeHighlight.vue";
 
 export default {
   name: 'app',
   components: {
     FormRenderer,
-    BlocklyComponent
+    BlocklyComponent,
+      CodeHighlight
   },
   data(){
     return {
       context: {},
+       tab: null,
+      jsonSchema: {},
       code: '',
       options: {
         media: 'media/',
@@ -77,8 +124,14 @@ export default {
 
             <category name="Functions" colour="290" custom="PROCEDURE"></category>
           <category name="FormFields" colour="%{BKY_LOOPS_HUE}">
-            <block type="simple_field"></block>
-            <block type="display"></block>
+            <block type="formfield"></block>
+            <block type="formsection"></block>
+            <block type="length_validation"></block>
+            <block type="regex_validation"></block>
+            <block type="numeric_value_validation"></block>
+            <block type="help"></block>
+            <block type="enum"></block>
+            <block type="multiple"></block>
           </category>
           <category name="Context" colour="%{BKY_LOOPS_HUE}">
             <block type="fieldfromcontext"></block>
@@ -94,6 +147,11 @@ export default {
       this.code = BlocklyJS.workspaceToCode(this.$refs["foo"].workspace);
       this.$refs["foo"].workspace.registerToolboxCategoryCallback('COLOUR_PALETTE', this.coloursFlyoutCallback)
     },
+    reset() {
+      this.code = null;
+      this.context = null;
+    },
+
     // test for dynamic elements
     coloursFlyoutCallback (workspace) {
         console.log(workspace);
@@ -115,6 +173,10 @@ export default {
 
         updateContext(payload){
           this.context = payload;
+      },
+
+        updatejsonSchema(payload){
+          this.jsonSchema = payload;
       }
 
   }
@@ -138,7 +200,7 @@ html, body {
   width: 50%;
   height: 50%;
   margin: 0;
-  background-color: beige;
+    overflow: hidden;
 }
 
 #blockly2 {
@@ -155,10 +217,24 @@ html, body {
     width: 50%;
     height: 50%;
     margin: 0;
+  overflow: scroll;
+}
+
+#control {
+  width: 100%;
+  height: 60px;
+  text-align: center;
+  background: #fff;
+  border-top: 1px solid #000;
+  padding: 10px;
 }
 
   #context {
     width: 100%;
     background-color: #eee;
   }
+    .code-preview{
+        overflow: scroll;
+        max-height: 300px;
+    }
 </style>

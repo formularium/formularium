@@ -1,26 +1,58 @@
-<template>
-    <div>
-        <div v-if="form.input.type" id="sandbox">
 
-            <span v-if="form.input.type !== 'render-text'">
-                <h2>Input</h2>
-            {{form.input.name}}:
-            <input :type="form.input.type" ref="theInput" :name="form.input.name">
-            </span>
-            <span v-if="form.input.type === 'render-text'">
-                <h2>Output</h2>
-             {{ form.input.content }}
-            </span>
-            <br>
-            <button
-    class="button"
-    @click="submitForm">Next</button>
-        </div>
+<template>
+    <div class="grey lighten-5 background">
+
+<v-container fill-height fluid>
+  <v-row align="center"
+      justify="center">
+      <v-col
+        :cols="10"
+                align-self="center"
+
+      >
+                <v-sheet
+  color="white"
+	elevation="1"
+>
+      <v-form v-model="valid">
+
+        <v-jsf v-model="model" :schema="schema"/>
+          <v-row
+    align="center"
+    justify="center"
+
+  >
+        <v-btn
+  color="primary"
+	depressed
+	outlined
+              class="ma-3"
+
+  elevation="1"
+            @click="submitForm"
+        >Zurück</v-btn>
+        <v-btn
+            class="ma-3"
+            color="primary"
+            elevation="1"
+            @click="submitForm"
+        >Weiter</v-btn>
+          </v-row>
+      </v-form>
+        </v-sheet>
+
+        </v-col>
+          </v-row>
+</v-container>
+
     </div>
 </template>
 
 <script>
+
     import Interpreter from 'js-interpreter';
+import '@koumoul/vjsf/lib/VJsf.css'
+import '@koumoul/vjsf/lib/deps/third-party.js'
 
     export default {
         props: ["code", "contextUpdate"],
@@ -29,6 +61,10 @@
             return {
                 formData: {
                 },
+                 valid: false,
+                model: {},
+                schema:{},
+                options: {},
                 input_model: "",
                 executorRunning: null,
                 form: {
@@ -59,14 +95,17 @@
                 interpreter.setProperty(globalObject, 'dataContext',
                     interpreter.createNativeFunction(wrapper));
 
-                var renderField_wrapper = function (props) {
+                var renderFormSection_wrapper = function (props) {
                     that.executorRunning = false;
+                    console.log("oh hey");
                     console.log(props);
-                    that.form.input = JSON.parse(props);
+                    that.schema = JSON.parse(props);
+                    that.$emit('jsonSchemaUpdate', that.schema);
+
                     };
 
-                interpreter.setProperty(globalObject, 'renderField',
-                    interpreter.createNativeFunction(renderField_wrapper));
+                interpreter.setProperty(globalObject, 'renderFormSection',
+                    interpreter.createNativeFunction(renderFormSection_wrapper));
             },
 
             executeCode(code) {
@@ -99,12 +138,9 @@
             },
 
             submitForm() {
-                if(this.form.input.type !== 'render-text')
-                {
-                    this.formData[this.form.input.name] = this.$refs.theInput.value;
-                    this.$emit('contextUpdate',this.formData);
-                }
-                this.form.input = {};
+                Object.assign(this.formData, this.model);
+                this.$emit('contextUpdate',this.formData);
+                this.model = {};
                 this.execute();
             }
         },
@@ -121,12 +157,10 @@
 
 <style scoped>
 
-    #sandbox {
-        width: 200px;
-        height: 200px;
-        margin: 5px;
-        border: 2px solid #000;
-        padding: 10px;
+    .background {
+      height: 100%;
     }
+
+
 
 </style>

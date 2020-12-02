@@ -8,12 +8,18 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.4.4",
+    "@koumoul/vjsf": "^1.17.1",
+    "@mdi/font": "^3.6.95",
     "blockly": "^3.20200924.4",
     "core-js": "^3.8.0",
     "js-interpreter": "^2.2.0",
+    "roboto-fontface": "*",
     "sweetalert2": "^10.10.4",
     "vue": "^2.6.11",
+    "vue-code-highlight": "^0.7.6",
     "vue-router": "^3.2.0",
+    "vuetify": "^2.2.11",
     "vuex": "^3.4.0"
   },
   "devDependencies": {
@@ -28,6 +34,7 @@
     "prettier": "^1.19.1",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
+    "vue-cli-plugin-vuetify": "^2.0.7",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
@@ -48,6 +55,7 @@
   "browserslist": [
     "> 1%",
     "last 2 versions",
-    "not dead"
+    "not dead",
+    "not ie <= 10"
   ]
 }
