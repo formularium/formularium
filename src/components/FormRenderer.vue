@@ -158,7 +158,7 @@ import '@koumoul/vjsf/lib/deps/third-party.js'
 <style scoped>
 
     .background {
-      height: 100%;
+      min-height: 100%;
     }
 
 

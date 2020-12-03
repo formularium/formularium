@@ -126,6 +126,7 @@ export default {
           <category name="FormFields" colour="%{BKY_LOOPS_HUE}">
             <block type="formfield"></block>
             <block type="formsection"></block>
+            <block type="jsonschemaformsection"></block>
             <block type="length_validation"></block>
             <block type="regex_validation"></block>
             <block type="numeric_value_validation"></block>

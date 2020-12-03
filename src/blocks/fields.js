@@ -184,6 +184,26 @@ Blockly.Blocks['multiple'] = {
 };
 
 
+Blockly.Blocks['jsonschemaformsection'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("SchemaForm Section")
+        .appendField(new Blockly.FieldTextInput("null"), "name");
+    this.appendDummyInput()
+        .appendField("Schema")
+        .appendField(new Blockly.FieldTextInput("null"), "schema");
+    this.appendStatementInput("help")
+        .setCheck("help")
+        .appendField("Help:");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(0);
+ this.setTooltip("");
+ this.setHelpUrl("");
+  }
+};
+
+
 Blockly.JavaScript['formfield'] = function(block) {
   var dropdown_type = block.getFieldValue('type');
   var dropdown_widget = block.getFieldValue('widget');
@@ -328,5 +348,15 @@ Blockly.JavaScript['multiple'] = function(block) {
   var value_max = Blockly.JavaScript.valueToCode(block, 'max', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
   var code = '...;\n';
+  return code;
+};
+
+
+Blockly.JavaScript['jsonschemaformsection'] = function(block) {
+  var text_name = block.getFieldValue('name');
+  var text_schema = block.getFieldValue('schema');
+  var statements_help = Blockly.JavaScript.statementToCode(block, 'help');
+  // TODO: Assemble JavaScript into code variable.
+  var code = 'renderFormSection(\''+text_schema+'\');\n';
   return code;
 };
