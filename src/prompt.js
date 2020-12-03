@@ -21,8 +21,7 @@
  * @author abbychau@gmail.com (Abby Chau)
  */
 
-
-import * as Blockly from 'blockly/core';
+import * as Blockly from "blockly/core";
 import Swal from "sweetalert2";
 
 var renameVar = function(name) {
@@ -45,4 +44,4 @@ Blockly.prompt = function(msg, defaultValue, callback) {
       callback(renameVar(result.value));
     }
   });
-};  
+};

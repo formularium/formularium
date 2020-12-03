@@ -13,6 +13,7 @@
     "@mdi/font": "^3.6.95",
     "blockly": "^3.20200924.4",
     "core-js": "^3.8.0",
+    "file-saver": "^2.0.5",
     "js-interpreter": "^2.2.0",
     "roboto-fontface": "*",
     "sweetalert2": "^10.10.4",
