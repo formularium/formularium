@@ -73,6 +73,7 @@
 import Interpreter from "js-interpreter";
 import "@koumoul/vjsf/lib/VJsf.css";
 import "@koumoul/vjsf/lib/deps/third-party.js";
+import PDFGenerator from "../lib/pdfGenerator";
 
 export default {
   props: ["code", "contextUpdate"],
@@ -83,6 +84,7 @@ export default {
       valid: false,
       model: {},
       schema: {},
+      fullSchema: [],
       options: {},
       input_model: "",
       executorRunning: null,
@@ -118,7 +120,7 @@ export default {
         * */
       var renderFormSection_wrapper = function(props) {
         that.executorRunning = false;
-        that.schema = {"type": "form", "schema": JSON.parse(props)};
+        that.updateSchema({"type": "form", "schema": JSON.parse(props)});
         that.$emit("jsonSchemaUpdate", that.schema);
       };
 
@@ -130,8 +132,8 @@ export default {
 
       var renderNavigation_wrapper = function(props) {
         that.executorRunning = false;
-        that.schema = {"type": "navigation", "schema": JSON.parse(props)};
-        that.$emit("jsonSchemaUpdate", that.schema);
+        that.updateSchema({"type": "navigation", "schema": JSON.parse(props)});
+
       };
 
       interpreter.setProperty(
@@ -178,6 +180,9 @@ export default {
         this.interpreter = null;
         this.executorRunning = false;
         this.schema = {"type": "navigation", "schema": {"title": "Done!", "description": "Application finished successfully."}};
+        var pdf = new PDFGenerator(this.formData, this.fullSchema);
+        pdf.generate()
+        pdf.download()
       }
     },
 
@@ -194,6 +199,12 @@ export default {
       Object.assign(this.formData, result);
       this.$emit("contextUpdate", this.formData);
       this.execute();
+    },
+
+    updateSchema(schema) {
+      this.schema = schema;
+      this.fullSchema.push(schema);
+      this.$emit("jsonSchemaUpdate", schema);
     }
   },
 
