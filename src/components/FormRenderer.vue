@@ -4,7 +4,6 @@
       <v-row align="center" justify="center">
         <v-col :cols="10" align-self="center">
           <v-sheet color="white" elevation="1">
-
             <v-form v-model="valid" v-if="schema.type === 'form'">
               <v-jsf v-model="model" :schema="schema.schema" />
               <v-row align="center" justify="center">
@@ -28,40 +27,36 @@
               </v-row>
             </v-form>
             <div v-if="schema.type === 'navigation'">
-                                             <h3 class="mx-2 py-2 center">{{schema.schema.title}}</h3>
+              <h3 class="mx-2 py-2 center">{{ schema.schema.title }}</h3>
 
-              <p class="mx-2">{{schema.schema.description}}</p>
-                           <v-row
-                align="center"
-                justify="center"
-              >
-              <v-col :cols="10" align-self="center"
-                align="center"
-                justify="center">
-
-
-                  <v-btn
-                  color="primary"
-                  outlined
-                  raised
-                  block
-                  rounded
+              <p class="mx-2">{{ schema.schema.description }}</p>
+              <v-row align="center" justify="center">
+                <v-col
+                  :cols="10"
+                  align-self="center"
                   align="center"
-                justify="center"
-                  class="my-4"
-                  tile
-                  x-large
-                  v-for="item in schema.schema.oneOf"
-                  :key="item.const"
-                  @click="selectNavigationItem(item)"
-
+                  justify="center"
                 >
-                    {{item.title}}
+                  <v-btn
+                    color="primary"
+                    outlined
+                    raised
+                    block
+                    rounded
+                    align="center"
+                    justify="center"
+                    class="my-4"
+                    tile
+                    x-large
+                    v-for="item in schema.schema.oneOf"
+                    :key="item.const"
+                    @click="selectNavigationItem(item)"
+                  >
+                    {{ item.title }}
                   </v-btn>
-              </v-col>
-                                          </v-row>
-
-              </div>
+                </v-col>
+              </v-row>
+            </div>
           </v-sheet>
         </v-col>
       </v-row>
@@ -112,15 +107,14 @@ export default {
         interpreter.createNativeFunction(wrapper)
       );
 
-
-        /*
-        * render json schema forms
-        * TODO: check if this could be done with asynchronous api calls, so maybe we don't have to execute the interpreter
-        * step by step
-        * */
+      /*
+       * render json schema forms
+       * TODO: check if this could be done with asynchronous api calls, so maybe we don't have to execute the interpreter
+       * step by step
+       * */
       var renderFormSection_wrapper = function(props) {
         that.executorRunning = false;
-        that.updateSchema({"type": "form", "schema": JSON.parse(props)});
+        that.updateSchema({ type: "form", schema: JSON.parse(props) });
         that.$emit("jsonSchemaUpdate", that.schema);
       };
 
@@ -132,8 +126,7 @@ export default {
 
       var renderNavigation_wrapper = function(props) {
         that.executorRunning = false;
-        that.updateSchema({"type": "navigation", "schema": JSON.parse(props)});
-
+        that.updateSchema({ type: "navigation", schema: JSON.parse(props) });
       };
 
       interpreter.setProperty(
@@ -144,7 +137,6 @@ export default {
     },
 
     executeCode(code) {
-
       if (this.interpreter === null) {
         var myInterpreter = new Interpreter(code, this.initApi);
         this.interpreter = myInterpreter;
@@ -157,17 +149,21 @@ export default {
     execute() {
       this.executorRunning = true;
       var last_setp = true;
-        /*
-        * We execute the code step by step, so that we can stop the execution inside the sandbox as soon as user innput is required
-        * */
+      /*
+       * We execute the code step by step, so that we can stop the execution inside the sandbox as soon as user innput is required
+       * */
       while (this.executorRunning === true && last_setp === true) {
-          try {
+        try {
           last_setp = this.interpreter.step();
         } catch (error) {
-            //TODO: find a nicer way for that
-              this.$emit("jsonSchemaUpdate", {"exception": JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)))});
-              console.error(error)
-          }
+          //TODO: find a nicer way for that
+          this.$emit("jsonSchemaUpdate", {
+            exception: JSON.parse(
+              JSON.stringify(error, Object.getOwnPropertyNames(error))
+            )
+          });
+          console.error(error);
+        }
         console.log("step executed");
       }
 
@@ -179,15 +175,21 @@ export default {
         // TODO: callback to the parent function
         this.interpreter = null;
         this.executorRunning = false;
-        this.schema = {"type": "navigation", "schema": {"title": "Done!", "description": "Application finished successfully."}};
+        this.schema = {
+          type: "navigation",
+          schema: {
+            title: "Done!",
+            description: "Application finished successfully."
+          }
+        };
         var pdf = new PDFGenerator(this.formData, this.fullSchema);
-        pdf.generate()
-        pdf.download()
+        pdf.generate();
+        pdf.download();
       }
     },
 
     submitForm() {
-        //as soon as the user submits a form we update the form context and continue the code
+      //as soon as the user submits a form we update the form context and continue the code
       Object.assign(this.formData, this.model);
       this.$emit("contextUpdate", this.formData);
       this.model = {};
