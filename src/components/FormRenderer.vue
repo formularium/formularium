@@ -22,6 +22,7 @@
                   color="primary"
                   elevation="1"
                   @click="submitForm"
+                  :disabled="valid === false && debuggerMode === false"
                   >Weiter</v-btn
                 >
               </v-row>
@@ -71,7 +72,7 @@ import "@koumoul/vjsf/lib/deps/third-party.js";
 import PDFGenerator from "../lib/pdfGenerator";
 
 export default {
-  props: ["code", "contextUpdate"],
+  props: ["code", "contextUpdate", "debuggerMode"],
   name: "FormRenderer",
   data() {
     return {
@@ -114,25 +115,14 @@ export default {
        * */
       var renderFormSection_wrapper = function(props) {
         that.executorRunning = false;
-        that.updateSchema({ type: "form", schema: JSON.parse(props) });
+        that.updateSchema(JSON.parse(props));
         that.$emit("jsonSchemaUpdate", that.schema);
       };
 
       interpreter.setProperty(
         globalObject,
-        "renderFormSection",
+        "render",
         interpreter.createNativeFunction(renderFormSection_wrapper)
-      );
-
-      var renderNavigation_wrapper = function(props) {
-        that.executorRunning = false;
-        that.updateSchema({ type: "navigation", schema: JSON.parse(props) });
-      };
-
-      interpreter.setProperty(
-        globalObject,
-        "renderNavigation",
-        interpreter.createNativeFunction(renderNavigation_wrapper)
       );
     },
 
@@ -183,8 +173,12 @@ export default {
           }
         };
         var pdf = new PDFGenerator(this.formData, this.fullSchema);
-        pdf.generate();
-        pdf.download();
+        if (this.$props.debuggerMode === true) {
+          pdf.generate();
+          pdf.download();
+        } else {
+          console.log("start submission");
+        }
       }
     },
 

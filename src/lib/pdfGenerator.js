@@ -22,14 +22,9 @@ class PDFGenerator {
         { text: "Übermittlungsbericht", style: "header", margin: [0, 5] },
         {
           text:
-            "Dieses Dokument ist in seiner digitalen Form ein Qualifizierter Sendebericht."
+            "Dieses Dokument ist in seiner digitalen Form ein qualifizierter Sendebericht."
         },
-        { text: "Folgende Informationen wurden erfolgreich übermittelt:" },
-        {
-          text: "Stamminformationen",
-          style: "sectionTitle",
-          margin: [0, 10, 0, 5]
-        }
+        { text: "Folgende Informationen wurden erfolgreich übermittelt:" }
       ],
       styles: {
         header: {
@@ -137,6 +132,11 @@ class PDFGenerator {
         }
       ]
     });
+  }
+
+  addSignature(content, signature) {
+    this.docDefinition.info["signedContent"] = content;
+    this.docDefinition.info["signature"] = signature;
   }
 }
 

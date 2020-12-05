@@ -23,6 +23,7 @@ import vuetify from "./plugins/vuetify";
 import "@babel/polyfill";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@mdi/font/css/materialdesignicons.css";
+import { createProvider } from "./vue-apollo";
 
 const _global =
   (typeof window !== "undefined" && window) ||
@@ -34,5 +35,6 @@ new Vue({
   router,
   store,
   vuetify,
+  apolloProvider: createProvider(),
   render: h => h(App)
 }).$mount("#app");

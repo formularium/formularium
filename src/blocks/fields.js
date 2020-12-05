@@ -353,7 +353,7 @@ Blockly.JavaScript["formsection"] = function(block) {
 
   var code =
     "" +
-    "renderFormSection(function () {\n" +
+    "render(function () {\n" +
     "var fields = {};\n" +
     " " +
     statements_form_fields +
@@ -370,9 +370,9 @@ Blockly.JavaScript["formsection"] = function(block) {
     "\n" +
     statements_help +
     "\n" +
-    'return JSON.stringify({ type: "object", "properties": { "' +
+    'return JSON.stringify({ type: "form", schema: { type: "object", "properties": { "' +
     text_name +
-    '": element}});\n' +
+    '": element}}});\n' +
     "}());\n";
 
   return code;
@@ -553,7 +553,7 @@ Blockly.JavaScript["jsonschemaformsection"] = function(block) {
   var text_schema = block.getFieldValue("schema");
   var statements_help = Blockly.JavaScript.statementToCode(block, "help");
   // TODO: Assemble JavaScript into code variable.
-  var code = "renderFormSection('" + text_schema + "');\n";
+  var code = 'render({ type: "form", schema: \'' + text_schema + "'});\n";
   return code;
 };
 
@@ -570,7 +570,7 @@ Blockly.JavaScript["navigation"] = function(block) {
   };
 
   var code =
-    "renderNavigation( JSON.stringify(function () {\n" +
+    'render( JSON.stringify({ type: "navigation", schema: function () {\n' +
     "var element = " +
     JSON.stringify(json) +
     "\n" +
@@ -580,7 +580,7 @@ Blockly.JavaScript["navigation"] = function(block) {
     "\n" +
     "return element;" +
     "\n" +
-    "}()));\n";
+    "}()}));\n";
 
   return code;
 };
