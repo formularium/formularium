@@ -2,12 +2,25 @@
   <div class="grey lighten-5 background">
     <v-container fill-height fluid>
       <v-row align="center" justify="center">
-        <v-col :cols="10" align-self="center">
-          <v-sheet color="white" elevation="1">
+        <v-col
+          :cols="12"
+          :xl="6"
+          class="mx-2 py-4 center"
+          :md="6"
+          :sm="10"
+          align-self="center"
+        >
+          <v-sheet color="white" elevation="1" class="px-2 py-2">
             <v-form v-model="valid" v-if="schema.type === 'form'">
-              <v-jsf v-model="model" :schema="schema.schema" />
-              <v-row align="center" justify="center">
-                <!--
+              <v-row>
+                <v-col>
+                  <v-jsf
+                    v-model="model"
+                    :schema="schema.schema"
+                    :options="options"
+                  />
+                  <v-row align="center" justify="center">
+                    <!--
                 <v-btn
                   color="primary"
                   depressed
@@ -17,38 +30,33 @@
                   @click="submitForm"
                   >Zurück</v-btn
                 >-->
-                <v-btn
-                  class="ma-3"
-                  color="primary"
-                  elevation="1"
-                  @click="submitForm"
-                  :disabled="valid === false && debuggerMode === false"
-                  >Weiter</v-btn
-                >
+                    <v-btn
+                      class="ma-3"
+                      color="primary"
+                      elevation="1"
+                      @click="submitForm"
+                      :disabled="valid === false && debuggerMode === false"
+                      >Weiter</v-btn
+                    >
+                  </v-row>
+                </v-col>
               </v-row>
             </v-form>
             <div v-if="schema.type === 'navigation'">
-              <h3 class="mx-2 py-2 center">{{ schema.schema.title }}</h3>
+              <h2 class="pl-3 pt-3 my-3 title">{{ schema.schema.title }}</h2>
 
-              <p class="mx-2">{{ schema.schema.description }}</p>
-              <v-row align="center" justify="center">
-                <v-col
-                  :cols="10"
-                  align-self="center"
-                  align="center"
-                  justify="center"
-                >
+              <p class="pl-3 ">{{ schema.schema.description }}</p>
+              <v-row fluid align="center" justify="center">
+                <v-col align-self="center" class="mx-3 ">
                   <v-btn
                     color="primary"
                     outlined
                     raised
                     block
                     rounded
-                    align="center"
-                    justify="center"
-                    class="my-4"
+                    class=" my-4"
                     tile
-                    x-large
+                    large
                     v-for="item in schema.schema.oneOf"
                     :key="item.const"
                     @click="selectNavigationItem(item)"
@@ -81,7 +89,48 @@ export default {
       model: {},
       schema: {},
       fullSchema: [],
-      options: {},
+      options: {
+        locale: "de",
+        rootDisplay: "",
+        objectContainerClass: "",
+        sectionsClass: "pl-2 pt-2",
+        sectionsTitlesClasses: ["title", "subtitle-1", "subtitle-2"],
+        childrenClass: "pr-2",
+        fieldProps: {},
+        fieldColProps: { cols: 12 },
+        textFieldProps: {},
+        textareaProps: { filled: true },
+        numberProps: {},
+        sliderProps: {},
+        checkboxProps: {},
+        switchProps: {},
+        comboboxProps: {},
+        selectProps: {},
+        fileInputProps: {},
+        radioGroupProps: {},
+        radioItemProps: {},
+        tabsProps: { grow: true },
+        expansionPanelsProps: { mandatory: true },
+        dialogProps: { maxWidth: 500 },
+        dialogCardProps: {},
+        colorPickerProps: {},
+        timePickerProps: {},
+        datePickerProps: { scrollable: true },
+        arrayItemCardProps: { tile: true },
+        arrayItemColProps: { cols: 12 },
+        removeAdditionalProperties: true,
+        disableAll: false,
+        hideReadOnly: false,
+        deleteReadOnly: false,
+        filesAsDataUrl: false,
+        hideTooltips: false,
+        disableSorting: false,
+        context: {},
+        rules: {},
+        initialValidation: "defined",
+        idPrefix: "",
+        markdownit: {}
+      },
       input_model: "",
       executorRunning: null,
       form: {

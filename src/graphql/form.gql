@@ -1,0 +1,11 @@
+query($formID: ID!)
+{
+  form(id: $formID) {
+    jsCode
+    xmlCode
+    id
+    name
+    description
+    active
+  }
+}
