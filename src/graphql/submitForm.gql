@@ -1,0 +1,9 @@
+
+mutation($formID: ID!, $content: String!) {
+ submitForm(formId: $formID, content: $content) {
+    signature
+    success
+    content
+  }
+
+}

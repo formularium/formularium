@@ -78,9 +78,10 @@ import Interpreter from "js-interpreter";
 import "@koumoul/vjsf/lib/VJsf.css";
 import "@koumoul/vjsf/lib/deps/third-party.js";
 import PDFGenerator from "../lib/pdfGenerator";
+var openpgp = require('openpgp');
 
 export default {
-  props: ["code", "contextUpdate", "debuggerMode"],
+  props: ["code", "contextUpdate", "debuggerMode", "formID"],
   name: "FormRenderer",
   data() {
     return {
@@ -198,7 +199,7 @@ export default {
           //TODO: find a nicer way for that
           this.$emit("jsonSchemaUpdate", {
             exception: JSON.parse(
-              JSON.stringify(error, Object.getOwnPropertyNames(error))
+                    JSON.stringify(error, Object.getOwnPropertyNames(error))
             )
           });
           console.error(error);
@@ -221,15 +222,56 @@ export default {
             description: "Application finished successfully."
           }
         };
-        var pdf = new PDFGenerator(this.formData, this.fullSchema);
+        const pdf = new PDFGenerator(this.formData, this.fullSchema);
+        // in debug mode we don't try to submit and sign the form data, just generate the report…
         if (this.$props.debuggerMode === true) {
           pdf.generate();
           pdf.download();
         } else {
-          console.log("start submission");
+          //check if keys exist - we can only encrypt st if keys have been provided
+          if (this.publicKeysForForm.length > 0) {
+            (async () => {
+              // load all keys provided
+              let pubkeys = [];
+              for (let k in this.publicKeysForForm) {
+                pubkeys.push((await openpgp.key.readArmored(this.publicKeysForForm[k].publicKey)).keys[0])
+              }
+
+              // encrypt message
+              const  { data: encryptedContent } = await openpgp.encrypt({
+                message: await openpgp.message.fromText(JSON.stringify(this.formData)),   // input as Message object the form data
+                publicKeys: pubkeys, // for encryption
+              });
+
+              // submit the encrypted form to the backend and receive the signature as a prove that the form has been submitted
+                this.$apollo.mutate({
+                  // Query
+                  mutation: require("../graphql/submitForm.gql"),
+                  // Parameters
+                  variables: {
+                      formID: this.formID,
+                      content: encryptedContent
+                  },}).then((data) => {
+                      console.log(data);
+                      // add signature & encrypted data to the pdf header
+                      pdf.addSignature(data.data.submitForm.content, data.data.submitForm.signature);
+                      // generate and return pdf
+                      pdf.generate();
+                      pdf.download();
+                }).catch((error) => {
+
+                  console.error(error);
+
+                });
+
+            })();
+          }
         }
       }
     },
+
+
+
 
     submitForm() {
       //as soon as the user submits a form we update the form context and continue the code
@@ -258,7 +300,20 @@ export default {
       this.executeCode(code);
       console.log(code);
     }
-  }
+  },
+  apollo: {
+  publicKeysForForm: {
+    query: require("../graphql/publicKeysForForm.gql"),
+    variables () {
+      return {
+        formID: this.$props.formID,
+      }
+    },
+    skip () {
+      return this.$props.formID === null
+    },
+  },
+},
 };
 </script>
 

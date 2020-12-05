@@ -15,6 +15,7 @@
     "core-js": "^3.8.0",
     "file-saver": "^2.0.5",
     "js-interpreter": "^2.2.0",
+    "openpgp": "^4.10.8",
     "pdfmake": "^0.1.68",
     "roboto-fontface": "*",
     "sweetalert2": "^10.10.4",
