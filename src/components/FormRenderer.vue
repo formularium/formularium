@@ -123,7 +123,7 @@ export default {
         disableAll: false,
         hideReadOnly: false,
         deleteReadOnly: false,
-        filesAsDataUrl: false,
+        filesAsDataUrl: true,
         hideTooltips: false,
         disableSorting: false,
         context: {},

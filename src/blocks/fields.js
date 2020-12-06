@@ -25,6 +25,7 @@ Blockly.Blocks["formfield"] = {
           ["checkbox", "checkbox"],
           ["switch", "switch"],
           ["file", "file"],
+          ["textarea", "textarea"],
           ["markdown", "markdown"],
           ["time", "time"],
           ["date", "date"],
@@ -553,7 +554,7 @@ Blockly.JavaScript["jsonschemaformsection"] = function(block) {
   var text_schema = block.getFieldValue("schema");
   var statements_help = Blockly.JavaScript.statementToCode(block, "help");
   // TODO: Assemble JavaScript into code variable.
-  var code = 'render({ type: "form", schema: \'' + text_schema + "'});\n";
+  var code = 'render(JSON.stringify({ type: "form", schema: JSON.parse(\'' + text_schema + '\')}));\n';
   return code;
 };
 
