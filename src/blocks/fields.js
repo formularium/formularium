@@ -54,12 +54,12 @@ Blockly.Blocks["formfield"] = {
       .appendField("Validation");
     this.appendStatementInput("help")
       .setCheck("help")
-      .appendField("Help");
+      .appendField("Help:");
     this.appendStatementInput("enums")
       .setCheck("enum")
       .appendField("Enums");
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
+    this.setPreviousStatement(true, ["multiple", "formfield"]);
+    this.setNextStatement(true, ["multiple", "formfield"]);
     this.setColour(230);
     this.setTooltip("");
     this.setHelpUrl("");
@@ -82,8 +82,16 @@ Blockly.Blocks["formsection"] = {
       .setCheck(null)
       .setAlign(Blockly.ALIGN_RIGHT)
       .appendField("Context");
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
+    this.setPreviousStatement(true, [
+      "regex_validation",
+      "numeric_value_validation",
+      "length_validation"
+    ]);
+    this.setNextStatement(true, [
+      "regex_validation",
+      "numeric_value_validation",
+      "length_validation"
+    ]);
     this.setColour(0);
     this.setTooltip("");
     this.setHelpUrl("");
@@ -107,8 +115,16 @@ Blockly.Blocks["length_validation"] = {
       .appendField("Error Message:")
       .appendField(new Blockly.FieldTextInput(""), "error_message");
     this.setInputsInline(true);
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
+    this.setPreviousStatement(true, [
+      "regex_validation",
+      "numeric_value_validation",
+      "length_validation"
+    ]);
+    this.setNextStatement(true, [
+      "regex_validation",
+      "numeric_value_validation",
+      "length_validation"
+    ]);
     this.setColour(180);
     this.setTooltip("");
     this.setHelpUrl("");
@@ -126,8 +142,16 @@ Blockly.Blocks["regex_validation"] = {
       .appendField("Error Message:")
       .appendField(new Blockly.FieldTextInput(""), "error_message");
     this.setInputsInline(true);
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
+    this.setPreviousStatement(true, [
+      "regex_validation",
+      "numeric_value_validation",
+      "length_validation"
+    ]);
+    this.setNextStatement(true, [
+      "regex_validation",
+      "numeric_value_validation",
+      "length_validation"
+    ]);
     this.setColour(180);
     this.setTooltip("");
     this.setHelpUrl("");
@@ -177,8 +201,8 @@ Blockly.Blocks["help"] = {
       .appendField("Value:")
       .appendField(new Blockly.FieldTextInput(""), "value");
     this.setInputsInline(true);
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
+    this.setPreviousStatement(true, "help");
+    this.setNextStatement(true, "help");
     this.setColour(90);
     this.setTooltip("");
     this.setHelpUrl("");
@@ -195,8 +219,8 @@ Blockly.Blocks["enum"] = {
       .appendField("Display Name:")
       .appendField(new Blockly.FieldTextInput(""), "display");
     this.setInputsInline(true);
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
+    this.setPreviousStatement(true, ["enum", "enum_from_list"]);
+    this.setNextStatement(true, ["enum", "enum_from_list"]);
     this.setColour(60);
     this.setTooltip("");
     this.setHelpUrl("");
@@ -208,8 +232,8 @@ Blockly.Blocks["enum_from_list"] = {
     this.appendDummyInput().appendField("ENUM from List");
     this.setInputsInline(true);
     this.appendValueInput("list").appendField("List:");
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
+    this.setPreviousStatement(true, ["enum", "enum_from_list"]);
+    this.setNextStatement(true, ["enum", "enum_from_list"]);
     this.setColour(60);
     this.setTooltip("");
     this.setHelpUrl("");
@@ -236,8 +260,8 @@ Blockly.Blocks["multiple"] = {
     this.appendStatementInput("help")
       .setCheck("help")
       .appendField("Help");
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
+    this.setPreviousStatement(true, ["multiple", "formfield"]);
+    this.setNextStatement(true, ["multiple", "formfield"]);
     this.setColour(285);
     this.setTooltip("");
     this.setHelpUrl("");
