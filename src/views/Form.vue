@@ -1,6 +1,10 @@
 <template>
   <div class="grey lighten-5 background">
-    <FormRenderer :code="code" :formID="id" :debuggerMode="false"></FormRenderer>
+    <FormRenderer
+      :code="code"
+      :formID="id"
+      :debuggerMode="false"
+    ></FormRenderer>
   </div>
 </template>
 
@@ -18,7 +22,7 @@ export default {
   watch: {
     form(form) {
       this.code = form.jsCode;
-      this.id = form.id
+      this.id = form.id;
     }
   },
   apollo: {

@@ -233,6 +233,9 @@ Blockly.Blocks["multiple"] = {
       .setCheck("Number")
       .appendField("Max")
       .appendField(new Blockly.FieldNumber(0, 1), "max");
+    this.appendStatementInput("help")
+      .setCheck("help")
+      .appendField("Help");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(285);
@@ -284,20 +287,20 @@ Blockly.Blocks["navigation"] = {
 };
 
 Blockly.JavaScript["formfield"] = function(block) {
-  var dropdown_type = block.getFieldValue("type");
-  var dropdown_widget = block.getFieldValue("widget");
-  var checkbox_required = block.getFieldValue("required") == "TRUE";
-  var text_name = block.getFieldValue("name");
-  var text_title = block.getFieldValue("title");
-  var statements_validation = Blockly.JavaScript.statementToCode(
+  let dropdown_type = block.getFieldValue("type");
+  let dropdown_widget = block.getFieldValue("widget");
+  let checkbox_required = block.getFieldValue("required") == "TRUE";
+  let text_name = block.getFieldValue("name");
+  let text_title = block.getFieldValue("title");
+  let statements_validation = Blockly.JavaScript.statementToCode(
     block,
     "validation"
   );
-  var statements_help = Blockly.JavaScript.statementToCode(block, "help");
-  var statements_enums = Blockly.JavaScript.statementToCode(block, "enums");
+  let statements_help = Blockly.JavaScript.statementToCode(block, "help");
+  let statements_enums = Blockly.JavaScript.statementToCode(block, "enums");
   // TODO: Assemble JavaScript into code variable.
 
-  var json = {};
+  let json = {};
 
   json = {
     title: text_title,
@@ -319,7 +322,7 @@ Blockly.JavaScript["formfield"] = function(block) {
     }
   }
 
-  var code =
+  let code =
     'fields["' +
     text_name +
     '"] = function () {\n' +
@@ -344,15 +347,13 @@ Blockly.JavaScript["formfield"] = function(block) {
 };
 
 Blockly.JavaScript["formsection"] = function(block) {
-  var text_name = block.getFieldValue("name");
-  var statements_form_fields = Blockly.JavaScript.statementToCode(
+  let text_name = block.getFieldValue("name");
+  let statements_form_fields = Blockly.JavaScript.statementToCode(
     block,
     "form_fields"
   );
-  var statements_help = Blockly.JavaScript.statementToCode(block, "help");
-  console.log(statements_form_fields);
-
-  var code =
+  let statements_help = Blockly.JavaScript.statementToCode(block, "help");
+  let code =
     "" +
     "render(function () {\n" +
     "var fields = {};\n" +
@@ -380,21 +381,21 @@ Blockly.JavaScript["formsection"] = function(block) {
 };
 
 Blockly.JavaScript["length_validation"] = function(block) {
-  var dropdown_type = block.getFieldValue("type");
-  var number_length = block.getFieldValue("length");
-  var value_name = Blockly.JavaScript.valueToCode(
+  let dropdown_type = block.getFieldValue("type");
+  let number_length = block.getFieldValue("length");
+  let value_name = Blockly.JavaScript.valueToCode(
     block,
     "NAME",
     Blockly.JavaScript.ORDER_ATOMIC
   );
-  var text_error_message = block.getFieldValue("error_message");
-  var length;
+  let text_error_message = block.getFieldValue("error_message");
+  let length;
   if (value_name) {
     length = value_name;
   } else {
     length = number_length;
   }
-  var code =
+  let code =
     "" +
     'element["' +
     dropdown_type +
@@ -413,20 +414,20 @@ Blockly.JavaScript["length_validation"] = function(block) {
 };
 
 Blockly.JavaScript["regex_validation"] = function(block) {
-  var text_pattern = block.getFieldValue("pattern");
-  var value_pattern = Blockly.JavaScript.valueToCode(
+  let text_pattern = block.getFieldValue("pattern");
+  let value_pattern = Blockly.JavaScript.valueToCode(
     block,
     "pattern",
     Blockly.JavaScript.ORDER_ATOMIC
   );
-  var text_error_message = block.getFieldValue("error_message");
-  var pattern;
+  let text_error_message = block.getFieldValue("error_message");
+  let pattern;
   if (value_pattern) {
     pattern = value_pattern;
   } else {
     pattern = "'" + text_pattern + "'";
   }
-  var code =
+  let code =
     "" +
     'element["pattern"] = ' +
     pattern +
@@ -441,22 +442,22 @@ Blockly.JavaScript["regex_validation"] = function(block) {
 };
 
 Blockly.JavaScript["numeric_value_validation"] = function(block) {
-  var dropdown_type = block.getFieldValue("type");
-  var number_value = block.getFieldValue("value");
-  var value_value = Blockly.JavaScript.valueToCode(
+  let dropdown_type = block.getFieldValue("type");
+  let number_value = block.getFieldValue("value");
+  let value_value = Blockly.JavaScript.valueToCode(
     block,
     "value",
     Blockly.JavaScript.ORDER_ATOMIC
   );
-  var text_error_message = block.getFieldValue("error_message");
+  let text_error_message = block.getFieldValue("error_message");
 
-  var value;
+  let value;
   if (value_value) {
     value = value_value;
   } else {
     value = number_value;
   }
-  var code =
+  let code =
     "" +
     'element["' +
     dropdown_type +
@@ -475,28 +476,28 @@ Blockly.JavaScript["numeric_value_validation"] = function(block) {
 };
 
 Blockly.JavaScript["help"] = function(block) {
-  var dropdown_type = block.getFieldValue("type");
-  var text_value = block.getFieldValue("value");
-  var value_value = Blockly.JavaScript.valueToCode(
+  let dropdown_type = block.getFieldValue("type");
+  let text_value = block.getFieldValue("value");
+  let value_value = Blockly.JavaScript.valueToCode(
     block,
     "value",
     Blockly.JavaScript.ORDER_ATOMIC
   );
-  var value = null;
+  let value = null;
   if (value_value) {
     value = value_value;
   } else {
     value = "'" + text_value + "'";
   }
-  var code = 'element["' + dropdown_type + '"] = ' + value + ";\n";
+  let code = 'element["' + dropdown_type + '"] = ' + value + ";\n";
   return code;
 };
 
 Blockly.JavaScript["enum"] = function(block) {
-  var text_value = block.getFieldValue("value");
-  var text_display = block.getFieldValue("display");
+  let text_value = block.getFieldValue("value");
+  let text_display = block.getFieldValue("display");
   // TODO: Assemble JavaScript into code variable.
-  var code =
+  let code =
     'if(!element["oneOf"]) {\n' +
     'element["oneOf"] = [];\n' +
     "}\n" +
@@ -509,12 +510,12 @@ Blockly.JavaScript["enum"] = function(block) {
 };
 
 Blockly.JavaScript["enum_from_list"] = function(block) {
-  var value_list = Blockly.JavaScript.valueToCode(
+  let value_list = Blockly.JavaScript.valueToCode(
     block,
     "list",
     Blockly.JavaScript.ORDER_ATOMIC
   );
-  var code =
+  let code =
     'if(!element["oneOf"]) {\n' +
     'element["oneOf"] = [];\n' +
     "}\n" +
@@ -530,47 +531,105 @@ Blockly.JavaScript["enum_from_list"] = function(block) {
 };
 
 Blockly.JavaScript["multiple"] = function(block) {
-  var text_name = block.getFieldValue("name");
-  var statements_fields = Blockly.JavaScript.statementToCode(block, "fields");
-  var number_min = block.getFieldValue("min");
-  var value_min = Blockly.JavaScript.valueToCode(
+  let text_name = block.getFieldValue("name");
+  let statements_fields = Blockly.JavaScript.statementToCode(block, "fields");
+  let statements_help = Blockly.JavaScript.statementToCode(block, "help");
+  let number_min = block.getFieldValue("min");
+  let value_min = Blockly.JavaScript.valueToCode(
     block,
     "min",
     Blockly.JavaScript.ORDER_ATOMIC
   );
-  var number_max = block.getFieldValue("max");
-  var value_max = Blockly.JavaScript.valueToCode(
+  let number_max = block.getFieldValue("max");
+  let value_max = Blockly.JavaScript.valueToCode(
     block,
     "max",
     Blockly.JavaScript.ORDER_ATOMIC
   );
-  // TODO: Assemble JavaScript into code variable.
-  var code = "...;\n";
+
+  let max_length;
+  if (value_max) {
+    max_length = value_max;
+  } else {
+    max_length = number_max;
+  }
+
+  let min_length;
+  if (value_min) {
+    min_length = value_min;
+  } else {
+    min_length = number_min;
+  }
+
+  console.log(statements_fields);
+  console.log("foo");
+  console.log(statements_help);
+
+  let code =
+    'fields["' +
+    text_name +
+    '"] = function () {' +
+    'var element = {"type": "object", "required": [], "properties": {},  "title": null};' +
+    "\n" +
+    statements_help +
+    "\n" +
+    "var fields = {};\n" +
+    statements_fields +
+    "\n" +
+    'element["properties"] = fields;' +
+    'var multiple = { "type": "array",' +
+    '"items": element,' +
+    '"title": element["title"],' +
+    "\n" +
+    '"minItems": ' +
+    min_length +
+    "," +
+    '"maxItems": ' +
+    max_length +
+    "," +
+    "};" +
+    'for(var e in multiple["items"]["properties"]) { \n' +
+    'if(multiple["items"]["properties"][e]["required"] === true) {\n' +
+    'multiple["items"]["required"].push(e)\n' +
+    "}\n" +
+    "}\n" +
+    "return multiple;" +
+    "\n" +
+    "}();\n";
   return code;
 };
 
 Blockly.JavaScript["jsonschemaformsection"] = function(block) {
-  var text_name = block.getFieldValue("name");
-  var text_schema = block.getFieldValue("schema");
-  var statements_help = Blockly.JavaScript.statementToCode(block, "help");
-  // TODO: Assemble JavaScript into code variable.
-  var code = 'render(JSON.stringify({ type: "form", schema: JSON.parse(\'' + text_schema + '\')}));\n';
+  let text_name = block.getFieldValue("name");
+  let text_schema = block.getFieldValue("schema");
+  let statements_help = Blockly.JavaScript.statementToCode(block, "help");
+
+  let code =
+    "" +
+    "var element = JSON.parse('" +
+    text_schema +
+    "');\n" +
+    statements_help +
+    "\n" +
+    'render(JSON.stringify({ type: "form", schema: { type: "object", "properties":{ "' +
+    text_name +
+    '": element}}}));\n';
   return code;
 };
 
 Blockly.JavaScript["navigation"] = function(block) {
-  var text_name = block.getFieldValue("name");
-  var text_title = block.getFieldValue("title");
-  var statements_help = Blockly.JavaScript.statementToCode(block, "help");
-  var statements_options = Blockly.JavaScript.statementToCode(block, "options");
+  let text_name = block.getFieldValue("name");
+  let text_title = block.getFieldValue("title");
+  let statements_help = Blockly.JavaScript.statementToCode(block, "help");
+  let statements_options = Blockly.JavaScript.statementToCode(block, "options");
   // TODO: Assemble JavaScript into code variable.
-  var json = {
+  let json = {
     title: text_title,
     name: text_name,
     type: "buttons"
   };
 
-  var code =
+  let code =
     'render( JSON.stringify({ type: "navigation", schema: function () {\n' +
     "var element = " +
     JSON.stringify(json) +
