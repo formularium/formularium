@@ -5,7 +5,12 @@ Formularium is a FOSS, privacy-first, and user-friendly toolkit for small to med
 
 **Why?**: We feel that municipalities are a backbone to democracy but often are left behind when extending the democratic government to the digital world. We think that neither existing vendors nor the federal government provides the software components and the concepts needed to digitize municipalities’ processes.
 
-So we decided to build open source concepts and software that will allow municipalities
+So we decided to build open-source concepts and software to allow municipalities to develop their dynamic forms themselves.
+
+### Features
+- Form editor based on the visual programming language blockly. This allows you to build almost any kind of validation/routing logic into your forms without writing a single line of code. 
+- Security by Design with End-to-End encryption. Every form gets PGP-Encrypted before it will be submitted to the backend. Only the administrative staff can decrypt form data locally.
+- Prove of transmission: The applicant get's a digitally signed receipt that the server has received their form.
 
 ## Project setup
 ```
