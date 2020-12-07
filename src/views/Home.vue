@@ -15,6 +15,7 @@
           federal government provides the software components and the concepts
           needed to digitize municipalities’ processes.
         </p>
+        <p>Learn more on <a href="https://github.com/LilithWittmann/formularium">Github</a>.</p>
       </v-sheet>
       <v-row dense v-if="allForms">
         <v-col
