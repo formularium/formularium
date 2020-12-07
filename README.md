@@ -13,6 +13,9 @@ So we decided to build open-source concepts and software to allow municipalities
 - Security by Design with End-to-End encryption. Every form gets PGP-Encrypted before it will be submitted to the backend. Only the administrative staff can decrypt form data locally.
 - Prove of transmission: The applicant get's a digitally signed receipt that the server has received their form.
 
+### Related Projects
+- [Formularium Backend](https://github.com/LilithWittmann/formularium-backend)
+
 ## Project setup
 ```
 npm install
