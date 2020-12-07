@@ -550,7 +550,9 @@ Blockly.JavaScript["enum_from_list"] = function(block) {
     value_list +
     '[e], "title": ' +
     value_list +
-    "[e]});}\n";
+    "[e]});}\n" +
+    "";
+
   return code;
 };
 

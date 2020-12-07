@@ -20,16 +20,16 @@
                     :options="options"
                   />
                   <v-row align="center" justify="center">
-                    <!--
-                <v-btn
-                  color="primary"
-                  depressed
-                  outlined
-                  class="ma-3"
-                  elevation="1"
-                  @click="submitForm"
-                  >Zurück</v-btn
-                >-->
+                    <v-btn
+                      color="primary"
+                      depressed
+                      outlined
+                      class="ma-3"
+                      elevation="1"
+                      @click="goBack"
+                      :disabled="interpreter.canGoBack() === false"
+                      >Zurück</v-btn
+                    >
                     <v-btn
                       class="ma-3"
                       color="primary"
@@ -74,10 +74,10 @@
 </template>
 
 <script>
-import Interpreter from "js-interpreter";
 import "@koumoul/vjsf/lib/VJsf.css";
 import "@koumoul/vjsf/lib/deps/third-party.js";
 import PDFGenerator from "../lib/pdfGenerator";
+import JSInterpreter from "../lib/jsInterpreter";
 var openpgp = require("openpgp");
 
 export default {
@@ -143,141 +143,117 @@ export default {
     };
   },
   methods: {
-    initApi(interpreter, globalObject) {
-      this.interpreter = interpreter;
-      console.log(this.interpreter);
-      // add an api to access the context during runtime
+    getNativeFunctions() {
       var that = this;
-      var wrapper = function() {
-        console.log(that);
-        return JSON.stringify(that.formData);
+      return {
+        // get the data context
+        dataContext() {
+          console.log(that);
+          return JSON.stringify(that.formData);
+        },
+        // render something
+        render(props, executor) {
+          executor.stop();
+          executor.schemaUpdate(JSON.parse(props));
+        }
       };
-      interpreter.setProperty(
-        globalObject,
-        "dataContext",
-        interpreter.createNativeFunction(wrapper)
-      );
+    },
 
-      /*
-       * render json schema forms
-       * TODO: check if this could be done with asynchronous api calls, so maybe we don't have to execute the interpreter
-       * step by step
-       * */
-      var renderFormSection_wrapper = function(props) {
-        that.executorRunning = false;
-        that.updateSchema(JSON.parse(props));
-        that.$emit("jsonSchemaUpdate", that.schema);
-      };
-
-      interpreter.setProperty(
-        globalObject,
-        "render",
-        interpreter.createNativeFunction(renderFormSection_wrapper)
-      );
+    schemaUpdate(schema) {
+      this.schema = schema;
+      this.fullSchema.push(schema);
+      this.$emit("jsonSchemaUpdate", schema);
     },
 
     executeCode(code) {
       if (this.interpreter === null) {
-        var myInterpreter = new Interpreter(code, this.initApi);
-        this.interpreter = myInterpreter;
-        this.executorRunning = true;
+        console.log(this.getNativeFunctions());
+        var that = this;
+        // initialize the interpreter with it's callbacks
+        this.interpreter = new JSInterpreter(
+          code,
+          this.getNativeFunctions(),
+          function(schema) {
+            // on schema update
+            that.schemaUpdate(schema);
+          },
+          function() {
+            // on done
+            that.generateReceipt();
+            that.schemaUpdate({
+              type: "navigation",
+              schema: {
+                title: "Done!",
+                description: "Application finished successfully."
+              }
+            });
+          }
+        );
       }
 
       this.execute();
     },
 
     execute() {
-      this.executorRunning = true;
-      var last_setp = true;
-      /*
-       * We execute the code step by step, so that we can stop the execution inside the sandbox as soon as user innput is required
-       * */
-      while (this.executorRunning === true && last_setp === true) {
-        try {
-          last_setp = this.interpreter.step();
-        } catch (error) {
-          //TODO: find a nicer way for that
-          this.$emit("jsonSchemaUpdate", {
-            exception: JSON.parse(
-              JSON.stringify(error, Object.getOwnPropertyNames(error))
-            )
-          });
-          console.error(error);
-        }
-        console.log("step executed");
-      }
+      this.interpreter.execute();
+      //this.executorRunning = true;
+    },
+    generateReceipt() {
+      const pdf = new PDFGenerator(this.formData, this.fullSchema);
+      // in debug mode we don't try to submit and sign the form data, just generate the report…
+      if (this.$props.debuggerMode === true) {
+        pdf.generate();
+        pdf.download();
+      } else {
+        //check if keys exist - we can only encrypt st if keys have been provided
+        if (this.publicKeysForForm.length > 0) {
+          (async () => {
+            // load all keys provided
+            let pubkeys = [];
+            for (let k in this.publicKeysForForm) {
+              pubkeys.push(
+                (
+                  await openpgp.key.readArmored(
+                    this.publicKeysForForm[k].publicKey
+                  )
+                ).keys[0]
+              );
+            }
 
-      if (this.executorRunning === false) {
-        console.log("executor halted by native function");
-        // TODO: here we have to take the interpreter step from one step before and cache it. So that we can go back in for,s
-      } else if (last_setp === false) {
-        console.log("executor done");
-        // TODO: callback to the parent function
-        this.interpreter = null;
-        this.executorRunning = false;
-        this.schema = {
-          type: "navigation",
-          schema: {
-            title: "Done!",
-            description: "Application finished successfully."
-          }
-        };
-        const pdf = new PDFGenerator(this.formData, this.fullSchema);
-        // in debug mode we don't try to submit and sign the form data, just generate the report…
-        if (this.$props.debuggerMode === true) {
-          pdf.generate();
-          pdf.download();
-        } else {
-          //check if keys exist - we can only encrypt st if keys have been provided
-          if (this.publicKeysForForm.length > 0) {
-            (async () => {
-              // load all keys provided
-              let pubkeys = [];
-              for (let k in this.publicKeysForForm) {
-                pubkeys.push(
-                  (
-                    await openpgp.key.readArmored(
-                      this.publicKeysForForm[k].publicKey
-                    )
-                  ).keys[0]
+            // encrypt message
+            const { data: encryptedContent } = await openpgp.encrypt({
+              message: await openpgp.message.fromText(
+                JSON.stringify(this.formData)
+              ), // input as Message object the form data
+              publicKeys: pubkeys // for encryption
+            });
+
+            // submit the encrypted form to the backend and receive the signature as a prove that the form has been submitted
+            this.$apollo
+              .mutate({
+                // Query
+                mutation: require("../graphql/submitForm.gql"),
+                // Parameters
+                variables: {
+                  formID: this.formID,
+                  content: encryptedContent
+                }
+              })
+              .then(data => {
+                console.log(data);
+                // add signature & encrypted data to the pdf header
+                pdf.addSignature(
+                  data.data.submitForm.content,
+                  data.data.submitForm.signature
                 );
-              }
-
-              // encrypt message
-              const { data: encryptedContent } = await openpgp.encrypt({
-                message: await openpgp.message.fromText(
-                  JSON.stringify(this.formData)
-                ), // input as Message object the form data
-                publicKeys: pubkeys // for encryption
+                // generate and return pdf
+                pdf.generate();
+                pdf.download();
+              })
+              .catch(error => {
+                console.error(error);
               });
-
-              // submit the encrypted form to the backend and receive the signature as a prove that the form has been submitted
-              this.$apollo
-                .mutate({
-                  // Query
-                  mutation: require("../graphql/submitForm.gql"),
-                  // Parameters
-                  variables: {
-                    formID: this.formID,
-                    content: encryptedContent
-                  }
-                })
-                .then(data => {
-                  console.log(data);
-                  // add signature & encrypted data to the pdf header
-                  pdf.addSignature(
-                    data.data.submitForm.content,
-                    data.data.submitForm.signature
-                  );
-                  // generate and return pdf
-                  pdf.generate();
-                  pdf.download();
-                })
-                .catch(error => {
-                  console.error(error);
-                });
-            })();
-          }
+          })();
         }
       }
     },
@@ -289,18 +265,21 @@ export default {
       this.model = {};
       this.execute();
     },
+
+    goBack() {
+      //as soon as the user submits a form we update the form context and continue the code
+      Object.assign(this.formData, this.model);
+      this.$emit("contextUpdate", this.formData);
+      this.interpreter.back();
+      this.model = {};
+      this.execute();
+    },
     selectNavigationItem(item) {
       var result = {};
       result[this.schema.schema.name] = item.const;
       Object.assign(this.formData, result);
       this.$emit("contextUpdate", this.formData);
       this.execute();
-    },
-
-    updateSchema(schema) {
-      this.schema = schema;
-      this.fullSchema.push(schema);
-      this.$emit("jsonSchemaUpdate", schema);
     }
   },
 

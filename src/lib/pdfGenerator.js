@@ -116,22 +116,24 @@ class PDFGenerator {
       style: "sectionTitle",
       margin: [0, 10, 0, 5]
     });
-    this.docDefinition.content.push({
-      columns: [
-        {
-          width: "30%",
-          text: "Auswahl",
-          style: "fieldName"
-        },
-        {
-          width: "70%",
-          text: section.oneOf.filter(obj => {
-            return obj.const == this.model[section.name];
-          })[0]["title"],
-          style: "fieldContent"
-        }
-      ]
-    });
+    if (section.oneOf) {
+      this.docDefinition.content.push({
+        columns: [
+          {
+            width: "30%",
+            text: "Auswahl",
+            style: "fieldName"
+          },
+          {
+            width: "70%",
+            text: section.oneOf.filter(obj => {
+              return obj.const == this.model[section.name];
+            })[0]["title"],
+            style: "fieldContent"
+          }
+        ]
+      });
+    }
   }
 
   addSignature(content, signature) {
