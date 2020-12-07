@@ -45,4 +45,4 @@ npm run lint
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### High-Level-Architecture
-![High-Level-Architecture](docs/HAL.png)
+![High-Level-Architecture](docs/HLA.png)
