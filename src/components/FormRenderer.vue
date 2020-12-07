@@ -285,6 +285,7 @@ export default {
 
   watch: {
     code: function(code) {
+      this.interpreter = null;
       this.executeCode(code);
       console.log(code);
     }
