@@ -665,7 +665,7 @@ Blockly.JavaScript["jsonschemaformsection"] = function(block) {
     "');\n" +
     statements_help +
     "\n" +
-    'render(JSON.stringify({ type: "form", name: '+name+' schema: { type: "object", "properties":{ ' +
+    'render(JSON.stringify({ type: "form", name: '+name+', schema: { type: "object", "properties":{ ' +
     name +
     ': element}}}));\n';
   return code;
@@ -692,7 +692,7 @@ Blockly.JavaScript["navigation"] = function(block) {
 
 
   let code =
-    'render( JSON.stringify({ type: "navigation", name: '+name+' ,schema: function () {\n' +
+    'render( JSON.stringify({ type: "navigation", name: '+name+', schema: function () {\n' +
     'var element = { title: "'+text_title+'", name: '+name+', type: "buttons"}'+
     "\n" +
     statements_options +
