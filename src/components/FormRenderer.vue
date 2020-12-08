@@ -31,7 +31,7 @@
                       outlined
                       class="ma-3"
                       elevation="1"
-                      v-if="interpreter.canGoBack() === true"
+                      v-if="interpreter.canGoBack() === true && schema.backBtn !== false"
                       @click="goBack"
                       >Zurück</v-btn
                     >
@@ -78,7 +78,7 @@
                       class=" my-4"
                       tile
                       large
-                      @click="selectNavigationItem(item)"
+                      @click="goBack()"
                     >
                       Zurück
                     </v-btn>

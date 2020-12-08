@@ -73,6 +73,9 @@ Blockly.Blocks["formsection"] = {
       .setCheck("String")
       .appendField("Name: ")
       .appendField(new Blockly.FieldTextInput("null"), "name");
+    this.appendDummyInput()
+      .appendField("Back Button: ")
+      .appendField(new Blockly.FieldCheckbox("TRUE"), "back_btn");
     this.appendStatementInput("form_fields")
       .setCheck(["formfield", "multiple"])
       .appendField("Form Fields:");
@@ -277,6 +280,9 @@ Blockly.Blocks["jsonschemaformsection"] = {
       .appendField("Name")
       .appendField(new Blockly.FieldTextInput("null"), "name");
     this.appendDummyInput()
+      .appendField("Back Button: ")
+      .appendField(new Blockly.FieldCheckbox("TRUE"), "back_btn");
+    this.appendDummyInput()
       .appendField("Schema")
       .appendField(new Blockly.FieldTextInput("null"), "schema");
     this.appendStatementInput("help")
@@ -297,6 +303,9 @@ Blockly.Blocks["navigation"] = {
       .setCheck("String")
       .appendField("Name: ")
       .appendField(new Blockly.FieldTextInput("null"), "name");
+    this.appendDummyInput()
+      .appendField("Back Button: ")
+      .appendField(new Blockly.FieldCheckbox("TRUE"), "back_btn");
     this.appendDummyInput()
       .appendField("Title")
       .appendField(new Blockly.FieldTextInput("null"), "title");
@@ -381,6 +390,8 @@ Blockly.JavaScript["formsection"] = function(block) {
     "form_fields"
   );
   let statements_help = Blockly.JavaScript.statementToCode(block, "help");
+  let checkbox_back_btn = block.getFieldValue("back_btn") == "TRUE";
+
 
   let value_name = Blockly.JavaScript.valueToCode(
     block,
@@ -413,7 +424,7 @@ Blockly.JavaScript["formsection"] = function(block) {
     "\n" +
     statements_help +
     "\n" +
-    'return JSON.stringify({ type: "form", name: ' +
+    'return JSON.stringify({ type: "form", backBtn: '+checkbox_back_btn+', name: ' +
     name +
     ', schema: { type: "object", "properties": { ' +
     name +
@@ -653,6 +664,8 @@ Blockly.JavaScript["jsonschemaformsection"] = function(block) {
     "name",
     Blockly.JavaScript.ORDER_ATOMIC
   );
+    let checkbox_back_btn = block.getFieldValue("back_btn") == "TRUE";
+
   let name = null;
   if (value_name) {
     name = value_name;
@@ -669,7 +682,7 @@ Blockly.JavaScript["jsonschemaformsection"] = function(block) {
     "\n" +
     'render(JSON.stringify({ type: "form", name: ' +
     name +
-    ', schema: { type: "object", "properties":{ ' +
+    ', schema: { type: "object", backBtn: '+checkbox_back_btn+',  "properties":{ ' +
     name +
     ": element}}}));\n";
   return code;
@@ -680,7 +693,8 @@ Blockly.JavaScript["navigation"] = function(block) {
   let text_title = block.getFieldValue("title");
   let statements_help = Blockly.JavaScript.statementToCode(block, "help");
   let statements_options = Blockly.JavaScript.statementToCode(block, "options");
-  // TODO: Assemble JavaScript into code variable.
+  let checkbox_back_btn = block.getFieldValue("back_btn") == "TRUE";
+
   let value_name = Blockly.JavaScript.valueToCode(
     block,
     "name",
@@ -695,7 +709,7 @@ Blockly.JavaScript["navigation"] = function(block) {
   }
 
   let code =
-    'render( JSON.stringify({ type: "navigation", name: ' +
+    'render( JSON.stringify({ backBtn: '+checkbox_back_btn+', type: "navigation", name: ' +
     name +
     ", schema: function () {\n" +
     'var element = { title: "' +
