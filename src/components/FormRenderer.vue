@@ -11,7 +11,12 @@
           align-self="center"
         >
           <v-sheet color="white" elevation="1" class="px-2 py-2">
-            <v-form v-model="valid" v-if="schema.type === 'form'">
+            <v-form
+              ref="schemaForm"
+              v-model="valid"
+              v-if="schema.type === 'form'"
+              @submit="submitForm"
+            >
               <v-row>
                 <v-col>
                   <v-jsf
@@ -26,16 +31,15 @@
                       outlined
                       class="ma-3"
                       elevation="1"
+                      v-if="interpreter.canGoBack() === true"
                       @click="goBack"
-                      :disabled="interpreter.canGoBack() === false"
                       >Zurück</v-btn
                     >
                     <v-btn
                       class="ma-3"
                       color="primary"
                       elevation="1"
-                      @click="submitForm"
-                      :disabled="valid === false && debuggerMode === false"
+                      type="submit"
                       >Weiter</v-btn
                     >
                   </v-row>
@@ -63,6 +67,22 @@
                   >
                     {{ item.title }}
                   </v-btn>
+                  <span
+                    v-if="interpreter.canGoBack() && schema.backBtn !== false"
+                  >
+                    <v-btn
+                      color="primary"
+                      raised
+                      block
+                      rounded
+                      class=" my-4"
+                      tile
+                      large
+                      @click="selectNavigationItem(item)"
+                    >
+                      Zurück
+                    </v-btn>
+                  </span>
                 </v-col>
               </v-row>
             </div>
@@ -165,11 +185,11 @@ export default {
       console.log(schema.name);
       console.log(this.formData);
       this.schema = schema;
-      if(schema.name in this.formData) {
+      if (schema.name in this.formData) {
         console.log("loading old data");
         let dataObj = {};
         dataObj[schema.name] = this.formData[schema.name];
-        this.model = dataObj
+        this.model = dataObj;
       }
       this.fullSchema.push(schema);
       this.$emit("jsonSchemaUpdate", schema);
@@ -192,6 +212,7 @@ export default {
             that.generateReceipt();
             that.schemaUpdate({
               type: "navigation",
+              backBtn: false,
               schema: {
                 title: "Done!",
                 description: "Application finished successfully."
@@ -268,12 +289,19 @@ export default {
       }
     },
 
-    submitForm() {
+    submitForm(frm) {
+      frm.preventDefault();
+
       //as soon as the user submits a form we update the form context and continue the code
-      Object.assign(this.formData, this.model);
-      this.$emit("contextUpdate", this.formData);
-      this.model = {};
-      this.execute();
+      if (
+        this.$refs.schemaForm.validate() ||
+        this.$props.debuggerMode === true
+      ) {
+        Object.assign(this.formData, this.model);
+        this.$emit("contextUpdate", this.formData);
+        this.model = {};
+        this.execute();
+      }
     },
 
     goBack() {
@@ -311,7 +339,7 @@ export default {
         return this.$props.formID === null;
       }
     }
-  },
+  }
 };
 </script>
 

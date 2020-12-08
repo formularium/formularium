@@ -25,7 +25,6 @@ class JSInterpreter {
     this.backStack = [];
   }
 
-
   stop() {
     this.running = false;
     console.log("stop");
@@ -60,8 +59,8 @@ class JSInterpreter {
   }
 
   back() {
-    if(this.canGoBack()){
-      console.log("goin back to")
+    if (this.canGoBack()) {
+      console.log("goin back to");
       this.backStack.pop();
       this.goTo = this.backStack.pop();
       console.log(this.goTo);
@@ -69,11 +68,11 @@ class JSInterpreter {
       this.setupInterpreter();
       this.execute();
     }
-
   }
 
   canGoBack() {
-    return this.backStack.length > 0;
+    // because we already added the current page to the stack
+    return this.backStack.length > 1;
   }
 
   schemaUpdate(schema) {
@@ -89,25 +88,20 @@ class JSInterpreter {
           globalObject,
           fn,
           interpreter.createNativeFunction(function(props) {
-
             // check if this is a function that adds st to the backstack
             console.log(fn);
-            if(executor.backStackFns.includes(fn))
-            {
+            if (executor.backStackFns.includes(fn)) {
               props = JSON.parse(props);
               executor.backStack.push(props["name"]);
               console.log(executor.backStack);
               // check if we want to go back to a specific page
-              if(executor.goTo != null)
-              {
-                if(props["name"] !== executor.goTo) {
+              if (executor.goTo != null) {
+                if (props["name"] !== executor.goTo) {
                   return;
                 } else {
                   executor.goTo = null;
                 }
-
               }
-
             }
             return executor.nativeFunctions[fn](props, executor);
           })

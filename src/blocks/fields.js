@@ -272,7 +272,7 @@ Blockly.Blocks["multiple"] = {
 Blockly.Blocks["jsonschemaformsection"] = {
   init: function() {
     this.appendDummyInput().appendField("JSON-Schema-Section");
-     this.appendValueInput("name")
+    this.appendValueInput("name")
       .setCheck("String")
       .appendField("Name")
       .appendField(new Blockly.FieldTextInput("null"), "name");
@@ -293,7 +293,7 @@ Blockly.Blocks["jsonschemaformsection"] = {
 Blockly.Blocks["navigation"] = {
   init: function() {
     this.appendDummyInput().appendField("Navigation");
-     this.appendValueInput("name")
+    this.appendValueInput("name")
       .setCheck("String")
       .appendField("Name: ")
       .appendField(new Blockly.FieldTextInput("null"), "name");
@@ -383,10 +383,10 @@ Blockly.JavaScript["formsection"] = function(block) {
   let statements_help = Blockly.JavaScript.statementToCode(block, "help");
 
   let value_name = Blockly.JavaScript.valueToCode(
-      block,
-      "name",
-      Blockly.JavaScript.ORDER_ATOMIC
-    );
+    block,
+    "name",
+    Blockly.JavaScript.ORDER_ATOMIC
+  );
   let name = null;
   if (value_name) {
     name = value_name;
@@ -413,9 +413,11 @@ Blockly.JavaScript["formsection"] = function(block) {
     "\n" +
     statements_help +
     "\n" +
-    'return JSON.stringify({ type: "form", name: '+name+', schema: { type: "object", "properties": { ' +
+    'return JSON.stringify({ type: "form", name: ' +
     name +
-    ': element}}});\n' +
+    ', schema: { type: "object", "properties": { ' +
+    name +
+    ": element}}});\n" +
     "}());\n";
 
   return code;
@@ -647,10 +649,10 @@ Blockly.JavaScript["jsonschemaformsection"] = function(block) {
   let text_schema = block.getFieldValue("schema");
   let statements_help = Blockly.JavaScript.statementToCode(block, "help");
   let value_name = Blockly.JavaScript.valueToCode(
-      block,
-      "name",
-      Blockly.JavaScript.ORDER_ATOMIC
-    );
+    block,
+    "name",
+    Blockly.JavaScript.ORDER_ATOMIC
+  );
   let name = null;
   if (value_name) {
     name = value_name;
@@ -665,9 +667,11 @@ Blockly.JavaScript["jsonschemaformsection"] = function(block) {
     "');\n" +
     statements_help +
     "\n" +
-    'render(JSON.stringify({ type: "form", name: '+name+', schema: { type: "object", "properties":{ ' +
+    'render(JSON.stringify({ type: "form", name: ' +
     name +
-    ': element}}}));\n';
+    ', schema: { type: "object", "properties":{ ' +
+    name +
+    ": element}}}));\n";
   return code;
 };
 
@@ -678,10 +682,10 @@ Blockly.JavaScript["navigation"] = function(block) {
   let statements_options = Blockly.JavaScript.statementToCode(block, "options");
   // TODO: Assemble JavaScript into code variable.
   let value_name = Blockly.JavaScript.valueToCode(
-      block,
-      "name",
-      Blockly.JavaScript.ORDER_ATOMIC
-    );
+    block,
+    "name",
+    Blockly.JavaScript.ORDER_ATOMIC
+  );
 
   let name = null;
   if (value_name) {
@@ -690,10 +694,15 @@ Blockly.JavaScript["navigation"] = function(block) {
     name = "'" + text_name + "'";
   }
 
-
   let code =
-    'render( JSON.stringify({ type: "navigation", name: '+name+', schema: function () {\n' +
-    'var element = { title: "'+text_title+'", name: '+name+', type: "buttons"}'+
+    'render( JSON.stringify({ type: "navigation", name: ' +
+    name +
+    ", schema: function () {\n" +
+    'var element = { title: "' +
+    text_title +
+    '", name: ' +
+    name +
+    ', type: "buttons"}' +
     "\n" +
     statements_options +
     "\n" +
