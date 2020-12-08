@@ -680,9 +680,9 @@ Blockly.JavaScript["jsonschemaformsection"] = function(block) {
     "');\n" +
     statements_help +
     "\n" +
-    'render(JSON.stringify({ type: "form", name: ' +
+    'render(JSON.stringify({ type: "form",  backBtn: '+checkbox_back_btn+', name: ' +
     name +
-    ', schema: { type: "object", backBtn: '+checkbox_back_btn+',  "properties":{ ' +
+    ', schema: { type: "object",  "properties":{ ' +
     name +
     ": element}}}));\n";
   return code;
