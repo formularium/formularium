@@ -69,7 +69,8 @@ Blockly.Blocks["formfield"] = {
 Blockly.Blocks["formsection"] = {
   init: function() {
     this.appendDummyInput().appendField("Form Section");
-    this.appendDummyInput()
+    this.appendValueInput("name")
+      .setCheck("String")
       .appendField("Name: ")
       .appendField(new Blockly.FieldTextInput("null"), "name");
     this.appendStatementInput("form_fields")
@@ -270,8 +271,10 @@ Blockly.Blocks["multiple"] = {
 
 Blockly.Blocks["jsonschemaformsection"] = {
   init: function() {
-    this.appendDummyInput()
-      .appendField("SchemaForm Section")
+    this.appendDummyInput().appendField("JSON-Schema-Section");
+     this.appendValueInput("name")
+      .setCheck("String")
+      .appendField("Name")
       .appendField(new Blockly.FieldTextInput("null"), "name");
     this.appendDummyInput()
       .appendField("Schema")
@@ -290,8 +293,9 @@ Blockly.Blocks["jsonschemaformsection"] = {
 Blockly.Blocks["navigation"] = {
   init: function() {
     this.appendDummyInput().appendField("Navigation");
-    this.appendDummyInput()
-      .appendField("Variable Name:")
+     this.appendValueInput("name")
+      .setCheck("String")
+      .appendField("Name: ")
       .appendField(new Blockly.FieldTextInput("null"), "name");
     this.appendDummyInput()
       .appendField("Title")
@@ -377,6 +381,19 @@ Blockly.JavaScript["formsection"] = function(block) {
     "form_fields"
   );
   let statements_help = Blockly.JavaScript.statementToCode(block, "help");
+
+  let value_name = Blockly.JavaScript.valueToCode(
+      block,
+      "name",
+      Blockly.JavaScript.ORDER_ATOMIC
+    );
+  let name = null;
+  if (value_name) {
+    name = value_name;
+  } else {
+    name = "'" + text_name + "'";
+  }
+
   let code =
     "" +
     "render(function () {\n" +
@@ -396,9 +413,9 @@ Blockly.JavaScript["formsection"] = function(block) {
     "\n" +
     statements_help +
     "\n" +
-    'return JSON.stringify({ type: "form", schema: { type: "object", "properties": { "' +
-    text_name +
-    '": element}}});\n' +
+    'return JSON.stringify({ type: "form", name: '+name+', schema: { type: "object", "properties": { ' +
+    name +
+    ': element}}});\n' +
     "}());\n";
 
   return code;
@@ -629,6 +646,17 @@ Blockly.JavaScript["jsonschemaformsection"] = function(block) {
   let text_name = block.getFieldValue("name");
   let text_schema = block.getFieldValue("schema");
   let statements_help = Blockly.JavaScript.statementToCode(block, "help");
+  let value_name = Blockly.JavaScript.valueToCode(
+      block,
+      "name",
+      Blockly.JavaScript.ORDER_ATOMIC
+    );
+  let name = null;
+  if (value_name) {
+    name = value_name;
+  } else {
+    name = "'" + text_name + "'";
+  }
 
   let code =
     "" +
@@ -637,9 +665,9 @@ Blockly.JavaScript["jsonschemaformsection"] = function(block) {
     "');\n" +
     statements_help +
     "\n" +
-    'render(JSON.stringify({ type: "form", schema: { type: "object", "properties":{ "' +
-    text_name +
-    '": element}}}));\n';
+    'render(JSON.stringify({ type: "form", name: '+name+' schema: { type: "object", "properties":{ ' +
+    name +
+    ': element}}}));\n';
   return code;
 };
 
@@ -649,16 +677,23 @@ Blockly.JavaScript["navigation"] = function(block) {
   let statements_help = Blockly.JavaScript.statementToCode(block, "help");
   let statements_options = Blockly.JavaScript.statementToCode(block, "options");
   // TODO: Assemble JavaScript into code variable.
-  let json = {
-    title: text_title,
-    name: text_name,
-    type: "buttons"
-  };
+  let value_name = Blockly.JavaScript.valueToCode(
+      block,
+      "name",
+      Blockly.JavaScript.ORDER_ATOMIC
+    );
+
+  let name = null;
+  if (value_name) {
+    name = value_name;
+  } else {
+    name = "'" + text_name + "'";
+  }
+
 
   let code =
-    'render( JSON.stringify({ type: "navigation", schema: function () {\n' +
-    "var element = " +
-    JSON.stringify(json) +
+    'render( JSON.stringify({ type: "navigation", name: '+name+' ,schema: function () {\n' +
+    'var element = { title: "'+text_title+'", name: '+name+', type: "buttons"}'+
     "\n" +
     statements_options +
     "\n" +

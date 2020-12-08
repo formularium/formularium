@@ -142,6 +142,7 @@ export default {
       interpreter: null
     };
   },
+
   methods: {
     getNativeFunctions() {
       var that = this;
@@ -154,13 +155,22 @@ export default {
         // render something
         render(props, executor) {
           executor.stop();
-          executor.schemaUpdate(JSON.parse(props));
+          executor.schemaUpdate(props);
         }
       };
     },
 
     schemaUpdate(schema) {
+      // load already entered fields
+      console.log(schema.name);
+      console.log(this.formData);
       this.schema = schema;
+      if(schema.name in this.formData) {
+        console.log("loading old data");
+        let dataObj = {};
+        dataObj[schema.name] = this.formData[schema.name];
+        this.model = dataObj
+      }
       this.fullSchema.push(schema);
       this.$emit("jsonSchemaUpdate", schema);
     },
@@ -270,9 +280,8 @@ export default {
       //as soon as the user submits a form we update the form context and continue the code
       Object.assign(this.formData, this.model);
       this.$emit("contextUpdate", this.formData);
-      this.interpreter.back();
       this.model = {};
-      this.execute();
+      this.interpreter.back();
     },
     selectNavigationItem(item) {
       var result = {};
@@ -302,7 +311,7 @@ export default {
         return this.$props.formID === null;
       }
     }
-  }
+  },
 };
 </script>
 

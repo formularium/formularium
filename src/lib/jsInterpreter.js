@@ -5,16 +5,26 @@ class JSInterpreter {
   nativeFunctions = null;
   schemaUpdateFn = null;
   doneFn = null;
+  code = null;
+  backStackFns = ["render"];
 
   running = false;
-  backStack = [];
+  backStack = null;
+  goTo = null;
 
   constructor(code, native_functions, schemaUpdateFn, doneFn) {
     this.nativeFunctions = native_functions;
     this.schemaUpdateFn = schemaUpdateFn;
     this.doneFn = doneFn;
-    this.interpreter = new Interpreter(code, this.setupNativeFunctions());
+    this.code = code;
+    this.setupInterpreter();
   }
+
+  setupInterpreter() {
+    this.interpreter = new Interpreter(this.code, this.setupNativeFunctions());
+    this.backStack = [];
+  }
+
 
   stop() {
     this.running = false;
@@ -49,10 +59,21 @@ class JSInterpreter {
     }
   }
 
-  back() {}
+  back() {
+    if(this.canGoBack()){
+      console.log("goin back to")
+      this.backStack.pop();
+      this.goTo = this.backStack.pop();
+      console.log(this.goTo);
+      // reset the interpreter to start
+      this.setupInterpreter();
+      this.execute();
+    }
+
+  }
 
   canGoBack() {
-    return false;
+    return this.backStack.length > 0;
   }
 
   schemaUpdate(schema) {
@@ -68,6 +89,26 @@ class JSInterpreter {
           globalObject,
           fn,
           interpreter.createNativeFunction(function(props) {
+
+            // check if this is a function that adds st to the backstack
+            console.log(fn);
+            if(executor.backStackFns.includes(fn))
+            {
+              props = JSON.parse(props);
+              executor.backStack.push(props["name"]);
+              console.log(executor.backStack);
+              // check if we want to go back to a specific page
+              if(executor.goTo != null)
+              {
+                if(props["name"] !== executor.goTo) {
+                  return;
+                } else {
+                  executor.goTo = null;
+                }
+
+              }
+
+            }
             return executor.nativeFunctions[fn](props, executor);
           })
         );
