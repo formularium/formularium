@@ -182,22 +182,21 @@ export default {
 
     schemaUpdate(schema) {
       // load already entered fields
-      console.log(schema.name);
-      console.log(this.formData);
-      this.schema = schema;
       if (schema.name in this.formData) {
         console.log("loading old data");
         let dataObj = {};
         dataObj[schema.name] = this.formData[schema.name];
         this.model = dataObj;
+      } else {
+        this.model = {};
       }
+      this.schema = schema;
       this.fullSchema.push(schema);
       this.$emit("jsonSchemaUpdate", schema);
     },
 
     executeCode(code) {
       if (this.interpreter === null) {
-        console.log(this.getNativeFunctions());
         var that = this;
         // initialize the interpreter with it's callbacks
         this.interpreter = new JSInterpreter(
@@ -271,7 +270,6 @@ export default {
                 }
               })
               .then(data => {
-                console.log(data);
                 // add signature & encrypted data to the pdf header
                 pdf.addSignature(
                   data.data.submitForm.content,
@@ -324,7 +322,6 @@ export default {
     code: function(code) {
       this.interpreter = null;
       this.executeCode(code);
-      console.log(code);
     }
   },
   apollo: {
