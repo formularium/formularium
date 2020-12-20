@@ -1,6 +1,7 @@
 /*eslint no-unused-vars: 1*/
 
 import * as Blockly from "blockly/core";
+
 Blockly.Blocks["formfield"] = {
   init: function() {
     this.appendDummyInput()
@@ -101,6 +102,51 @@ Blockly.Blocks["formsection"] = {
     this.setHelpUrl("");
   }
 };
+import EditBtn from "../assets/edit_btn.svg";
+Blockly.Blocks["formsection_editor"] = {
+  init: function() {
+    this.appendDummyInput().appendField("Form Editor Section");
+    this.appendValueInput("name")
+      .setCheck("String")
+      .appendField("Name: ")
+      .appendField(new Blockly.FieldTextInput("null"), "name");
+    this.appendDummyInput()
+      .appendField("Back Button: ")
+      .appendField(new Blockly.FieldCheckbox("TRUE"), "back_btn");
+    this.appendDummyInput().appendField(
+      new Blockly.FieldImage(EditBtn, 100, 30, "Open Editor", callJSONEditor)
+    );
+    this.setPreviousStatement(true, [
+      "regex_validation",
+      "numeric_value_validation",
+      "length_validation"
+    ]);
+    this.setNextStatement(true, [
+      "regex_validation",
+      "numeric_value_validation",
+      "length_validation"
+    ]);
+    this.setColour(0);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  }
+};
+
+// crude way to communicate to vue.js to open the json editor.
+function callJSONEditor(e) {
+  if (e.sourceBlock_.data === null) {
+    e.sourceBlock_.data = Math.random()
+      .toString(36)
+      .replace(/[^a-z]+/g, "")
+      .substr(0, 5);
+  }
+  var event = new CustomEvent("openSchemaEditor", {
+    detail: { id: e.sourceBlock_.data }
+  });
+  window.dispatchEvent(event);
+
+  return 0;
+}
 
 Blockly.Blocks["length_validation"] = {
   init: function() {
@@ -392,7 +438,6 @@ Blockly.JavaScript["formsection"] = function(block) {
   let statements_help = Blockly.JavaScript.statementToCode(block, "help");
   let checkbox_back_btn = block.getFieldValue("back_btn") == "TRUE";
 
-
   let value_name = Blockly.JavaScript.valueToCode(
     block,
     "name",
@@ -424,7 +469,9 @@ Blockly.JavaScript["formsection"] = function(block) {
     "\n" +
     statements_help +
     "\n" +
-    'return JSON.stringify({ type: "form", backBtn: '+checkbox_back_btn+', name: ' +
+    'return JSON.stringify({ type: "form", backBtn: ' +
+    checkbox_back_btn +
+    ", name: " +
     name +
     ', schema: { type: "object", "properties": { ' +
     name +
@@ -432,6 +479,10 @@ Blockly.JavaScript["formsection"] = function(block) {
     "}());\n";
 
   return code;
+};
+
+Blockly.JavaScript["formsection_editor"] = function(block) {
+  return "";
 };
 
 Blockly.JavaScript["length_validation"] = function(block) {
@@ -664,7 +715,7 @@ Blockly.JavaScript["jsonschemaformsection"] = function(block) {
     "name",
     Blockly.JavaScript.ORDER_ATOMIC
   );
-    let checkbox_back_btn = block.getFieldValue("back_btn") == "TRUE";
+  let checkbox_back_btn = block.getFieldValue("back_btn") == "TRUE";
 
   let name = null;
   if (value_name) {
@@ -680,7 +731,9 @@ Blockly.JavaScript["jsonschemaformsection"] = function(block) {
     "');\n" +
     statements_help +
     "\n" +
-    'render(JSON.stringify({ type: "form",  backBtn: '+checkbox_back_btn+', name: ' +
+    'render(JSON.stringify({ type: "form",  backBtn: ' +
+    checkbox_back_btn +
+    ", name: " +
     name +
     ', schema: { type: "object",  "properties":{ ' +
     name +
@@ -709,7 +762,9 @@ Blockly.JavaScript["navigation"] = function(block) {
   }
 
   let code =
-    'render( JSON.stringify({ backBtn: '+checkbox_back_btn+', type: "navigation", name: ' +
+    "render( JSON.stringify({ backBtn: " +
+    checkbox_back_btn +
+    ', type: "navigation", name: ' +
     name +
     ", schema: function () {\n" +
     'var element = { title: "' +

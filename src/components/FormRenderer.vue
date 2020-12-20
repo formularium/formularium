@@ -31,7 +31,10 @@
                       outlined
                       class="ma-3"
                       elevation="1"
-                      v-if="interpreter.canGoBack() === true && schema.backBtn !== false"
+                      v-if="
+                        interpreter.canGoBack() === true &&
+                          schema.backBtn !== false
+                      "
                       @click="goBack"
                       >Zurück</v-btn
                     >

@@ -1,13 +1,13 @@
 <template>
-  <FormEditor :xml-code="this.code"></FormEditor>
+  <AppEditor :xml-code="this.code"></AppEditor>
 </template>
 
 <script>
-import FormEditor from "../components/FormEditor";
+import AppEditor from "../components/AppEditor";
 
 export default {
   name: "Editor",
-  components: { FormEditor },
+  components: { AppEditor },
 
   data() {
     return { code: "" };

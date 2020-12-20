@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="30px" viewBox="0 0 100 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60.1 (88133) - https://sketch.com -->
+    <title>Artboard</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" stroke="#FFFFFF" stroke-width="2" x="1" y="1" width="98" height="28" rx="2"></rect>
+        <text id="Edit" font-family="Helvetica" font-size="18" font-weight="normal" fill="#FFFFFF">
+            <tspan x="34" y="22">Edit</tspan>
+        </text>
+    </g>
+</svg>
