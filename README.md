@@ -18,6 +18,7 @@ So we decided to build open-source concepts and software to allow municipalities
 
 ### Related Projects
 - [Formularium Backend](https://github.com/LilithWittmann/formularium-backend)
+- [Formularium Desktop](https://github.com/LilithWittmann/formularium-desktop)
 
 ## Project setup
 ```
