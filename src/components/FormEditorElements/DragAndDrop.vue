@@ -43,7 +43,7 @@
             <v-col
               :cols="12"
               :xl="8"
-              class="mx-2 py-4 center"
+              class="mx-2 py-4 center scroll-y"
               :md="8"
               :sm="10"
               align-self="center"
@@ -67,10 +67,7 @@
                     >
                       <v-row>
                         <v-col class="py-0">
-                          <v-btn-toggle
-                            class="float-right"
-                            v-model="toggle_none"
-                          >
+                          <v-btn-toggle class="float-right edit-option">
                             <v-btn x-small>
                               <v-icon x-small>mdi-pencil</v-icon></v-btn
                             >
@@ -126,10 +123,111 @@ export default {
   data() {
     return {
       list1: [
-        { name: "Text", id: 1 },
-        { name: "Number", id: 2 },
-        { name: "Phone", id: 3 },
-        { name: "E-Mail", id: 4 }
+        {
+          name: "Text",
+          widget: null,
+          type: "string",
+          typeChoices: ["string"],
+          additional: {},
+          widgetChoices: [""],
+          id: 1
+        },
+        {
+          name: "Long Text",
+          widget: "textarea",
+          type: "string",
+          typeChoices: ["string"],
+          widgetChoices: ["textarea"],
+          additional: {},
+          id: 2
+        },
+        {
+          name: "Number",
+          widget: null,
+          type: "number",
+          typeChoices: ["number", "integer"],
+          widgetChoices: [],
+          additional: {},
+          id: 3
+        },
+        {
+          name: "Checkbox",
+          widget: "checkbox",
+          type: "array",
+          typeChoices: ["array", "boolean", "string"],
+          additional: {
+            items: {
+              type: "string",
+              oneOf: [
+                { const: "first", title: "First Option" },
+                { const: "second", title: "Second Option" }
+              ]
+            }
+          },
+          widgetChoices: ["checkbox"],
+          id: 4
+        },
+        {
+          name: "Radio",
+          widget: "radio",
+          type: "array",
+          typeChoices: ["array", "string"],
+          widgetChoices: ["radio"],
+          additional: {
+            items: {
+              type: "string",
+              oneOf: [
+                { const: "first", title: "First Option" },
+                { const: "second", title: "Second Option" }
+              ]
+            }
+          },
+          id: 5
+        },
+        {
+          name: "Switch",
+          widget: "switch",
+          type: "array",
+          typeChoices: ["boolean"],
+          widgetChoices: ["switch"],
+          additional: {
+            items: {
+              type: "string",
+              oneOf: [
+                { const: "first", title: "First Option" },
+                { const: "second", title: "Second Option" }
+              ]
+            }
+          },
+          id: 6
+        },
+        {
+          name: "File",
+          widget: "file",
+          type: "string",
+          typeChoices: ["string"],
+          widgetChoices: ["file"],
+          additional: {},
+          id: 7
+        },
+        {
+          name: "Date/Time",
+          widget: "date-time",
+          type: "string",
+          typeChoices: ["string"],
+          widgetChoices: ["date-time", "date", "time"],
+          additional: {},
+          id: 8
+        },
+        {
+          name: "Color",
+          widget: "color-picker",
+          type: "string",
+          typeChoices: ["string"],
+          widgetChoices: ["color-picker"],
+          additional: {},
+          id: 9
+        }
       ],
       list2: [],
       formData: {}
@@ -143,31 +241,61 @@ export default {
       this.list2.splice(idx, 1);
     },
     cloneField(item) {
-      return {
+      let json = {
+        type: item.type,
+        description: "",
+        title: item.name,
+        ...item.additional
+      };
+      if (item.widget !== "") {
+        if (
+          ["date", "date-time", "time", "hexcolor"].includes(item.widget) !==
+          false
+        ) {
+          json["format"] = item.widget;
+        } else {
+          json["x-display"] = item.widget;
+        }
+      }
+      console.log(json);
+      let element = {
         id: idGlobal++,
         name: item.name,
         schema: {
           type: "object",
-          required: ["firstName"],
-          properties: {
-            firstName: {
-              type: "string",
-              title: item.name
-            }
-          }
+          required: [],
+          properties: {}
         }
       };
+
+      element["schema"]["properties"][
+        Math.random()
+          .toString(36)
+          .replace(/[^a-z]+/g, "")
+          .substr(0, 5)
+      ] = json;
+      return element;
     }
   }
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .form-item {
-  padding-top: 5px;
-  padding-bottom: 5px;
+  padding-top: 40px;
+  padding-bottom: 20px;
   border-bottom: 2px solid #e3e3e3;
   background-color: #fff;
+}
+
+.form-item .edit-option {
+  display: none;
+}
+.form-item:hover {
+  padding-top: 16px;
+}
+.form-item:hover .edit-option {
+  display: inline-block;
 }
 .white-background {
   background-color: #fff;
