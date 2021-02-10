@@ -12,7 +12,7 @@ Vue.use(VueApollo);
 const AUTH_TOKEN = "authToken";
 
 // Http endpoint
-const httpEndpoint = "https://formulariumapi.verdrusssache.de/graphql/";
+const httpEndpoint = process.env.VUE_APP_FORMULARIUM_GRAPHQL_ENDPOINT;
 // Files URL root
 export const filesRoot =
   process.env.VUE_APP_FILES_ROOT ||

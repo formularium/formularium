@@ -68,7 +68,7 @@
                       <v-row>
                         <v-col class="py-0">
                           <v-btn-toggle class="float-right edit-option">
-                            <v-btn x-small>
+                            <v-btn x-small @click="showEditor(idx)">
                               <v-icon x-small>mdi-pencil</v-icon></v-btn
                             >
 
@@ -78,7 +78,10 @@
                           </v-btn-toggle>
                         </v-col>
                       </v-row>
-                      <v-row>
+                        <v-row v-if="idx in viewTab && viewTab[idx] === 'editor'">
+
+                        </v-row>
+                      <v-row v-else >
                         <v-col class="py-0">
                           <v-jsf :schema="element.schema" v-model="formData" />
                         </v-col>
@@ -122,6 +125,10 @@ export default {
   },
   data() {
     return {
+
+        viewTab: {
+
+        },
       list1: [
         {
           name: "Text",
@@ -240,6 +247,9 @@ export default {
     removeAt(idx) {
       this.list2.splice(idx, 1);
     },
+      showEditor(idx) {
+        this.viewTab[idx] = 'editor';
+      },
     cloneField(item) {
       let json = {
         type: item.type,

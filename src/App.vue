@@ -3,7 +3,7 @@
     <v-app>
       <v-main>
         <v-toolbar>
-          <v-toolbar-title>Formularium <b>α</b></v-toolbar-title>
+          <v-toolbar-title v-html="pageTitle"></v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
         <router-view />
@@ -14,7 +14,12 @@
 <script>
 export default {
   name: "app",
-  components: {}
+  components: {},
+  data(){
+    return {
+      pageTitle: process.env.VUE_APP_FORMULARIUM_TITLE
+    };
+  }
 };
 </script>
 

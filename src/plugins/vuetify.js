@@ -8,13 +8,13 @@ export default new Vuetify({
   theme: {
     themes: {
       light: {
-        primary: "#ee44aa",
-        secondary: "#424242",
-        accent: "#82B1FF",
-        error: "#FF5252",
-        info: "#2196F3",
-        success: "#4CAF50",
-        warning: "#FFC107"
+        primary: process.env.VUE_APP_COLOR_PRIMARY,
+        secondary: process.env.VUE_APP_COLOR_SECONDARY,
+        accent: process.env.VUE_APP_COLOR_ACCENT,
+        error: process.env.VUE_APP_COLOR_ERROR,
+        info: process.env.VUE_APP_COLOR_INFO,
+        success: process.env.VUE_APP_COLOR_SUCCESS,
+        warning: process.env.VUE_APP_COLOR_WARNING
       }
     }
   }
