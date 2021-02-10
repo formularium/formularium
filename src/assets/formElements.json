@@ -1,0 +1,165 @@
+{
+  "text": {
+    "name": "Text",
+    "widget": null,
+    "type": "string",
+    "typeChoices": [
+      "string"
+    ],
+    "additional": {},
+    "widgetChoices": [
+      ""
+    ],
+    "id": 1
+  },
+  "long-text": {
+    "name": "Long Text",
+    "widget": "textarea",
+    "type": "string",
+    "typeChoices": [
+      "string"
+    ],
+    "widgetChoices": [
+      "textarea"
+    ],
+    "additional": {},
+    "id": 2
+  },
+  "number": {
+    "name": "Number",
+    "widget": null,
+    "type": "number",
+    "typeChoices": [
+      "number",
+      "integer"
+    ],
+    "widgetChoices": [],
+    "additional": {},
+    "id": 3
+  },
+  "checkbox": {
+    "name": "Checkbox",
+    "widget": "checkbox",
+    "type": "array",
+    "typeChoices": [
+      "array",
+      "boolean",
+      "string"
+    ],
+    "additional": {
+      "items": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "first",
+            "title": "First Option"
+          },
+          {
+            "const": "second",
+            "title": "Second Option"
+          }
+        ]
+      }
+    },
+    "widgetChoices": [
+      "checkbox"
+    ],
+    "id": 4
+  },
+  "radio": {
+    "name": "Radio",
+    "widget": "radio",
+    "type": "array",
+    "typeChoices": [
+      "array",
+      "string"
+    ],
+    "widgetChoices": [
+      "radio"
+    ],
+    "additional": {
+      "items": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "first",
+            "title": "First Option"
+          },
+          {
+            "const": "second",
+            "title": "Second Option"
+          }
+        ]
+      }
+    },
+    "id": 5
+  },
+  "switch": {
+    "name": "Switch",
+    "widget": "switch",
+    "type": "array",
+    "typeChoices": [
+      "boolean"
+    ],
+    "widgetChoices": [
+      "switch"
+    ],
+    "additional": {
+      "items": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "first",
+            "title": "First Option"
+          },
+          {
+            "const": "second",
+            "title": "Second Option"
+          }
+        ]
+      }
+    },
+    "id": 6
+  },
+  "file": {
+    "name": "File",
+    "widget": "file",
+    "type": "string",
+    "typeChoices": [
+      "string"
+    ],
+    "widgetChoices": [
+      "file"
+    ],
+    "additional": {},
+    "id": 7
+  },
+  "date-time": {
+    "name": "Date/Time",
+    "widget": "date-time",
+    "type": "string",
+    "typeChoices": [
+      "string"
+    ],
+    "widgetChoices": [
+      "date-time",
+      "date",
+      "time"
+    ],
+    "additional": {},
+    "id": 8
+  },
+  "color-picker": {
+    "name": "Color",
+    "widget": "color-picker",
+    "type": "string",
+    "typeChoices": [
+      "string"
+    ],
+    "widgetChoices": [
+      "color-picker"
+    ],
+    "additional": {},
+    "id": 9
+  }
+}

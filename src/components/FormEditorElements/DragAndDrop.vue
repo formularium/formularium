@@ -50,7 +50,7 @@
             >
               <v-sheet color="white" elevation="1" class="px-2 py-2">
                 <v-form ref="schemaForm">
-                  <div class="form-item">
+                  <div>
                     <h3 contenteditable>Form title</h3>
                   </div>
                   <draggable
@@ -61,31 +61,13 @@
                     @change="log"
                   >
                     <div
-                      class="form-item"
                       v-for="(element, idx) in list2"
-                      :key="element.id"
+                      :key="element.interalID"
                     >
-                      <v-row>
-                        <v-col class="py-0">
-                          <v-btn-toggle class="float-right edit-option">
-                            <v-btn x-small @click="showEditor(idx)">
-                              <v-icon x-small>mdi-pencil</v-icon></v-btn
-                            >
-
-                            <v-btn color="red" x-small @click="removeAt(idx)">
-                              <v-icon x-small light>mdi-delete</v-icon>
-                            </v-btn>
-                          </v-btn-toggle>
-                        </v-col>
-                      </v-row>
-                        <v-row v-if="idx in viewTab && viewTab[idx] === 'editor'">
-
-                        </v-row>
-                      <v-row v-else >
-                        <v-col class="py-0">
-                          <v-jsf :schema="element.schema" v-model="formData" />
-                        </v-col>
-                      </v-row>
+                      <FormElement
+                        :idX="idx"
+                        :inputElement="element"
+                      ></FormElement>
                     </div>
                   </draggable>
                 </v-form>
@@ -116,126 +98,27 @@
 
 <script>
 import draggable from "vuedraggable";
+import FormElement from "./FormElement";
 let idGlobal = 8;
+import formElements from "../../assets/formElements";
+
 export default {
   name: "DragAndDrop",
   order: 3,
   components: {
+    FormElement,
     draggable
   },
   data() {
+    let list1 = [];
+    for (let e in formElements) {
+      let fe = formElements[e];
+      fe["typeID"] = e;
+      list1.push(fe);
+    }
     return {
-
-        viewTab: {
-
-        },
-      list1: [
-        {
-          name: "Text",
-          widget: null,
-          type: "string",
-          typeChoices: ["string"],
-          additional: {},
-          widgetChoices: [""],
-          id: 1
-        },
-        {
-          name: "Long Text",
-          widget: "textarea",
-          type: "string",
-          typeChoices: ["string"],
-          widgetChoices: ["textarea"],
-          additional: {},
-          id: 2
-        },
-        {
-          name: "Number",
-          widget: null,
-          type: "number",
-          typeChoices: ["number", "integer"],
-          widgetChoices: [],
-          additional: {},
-          id: 3
-        },
-        {
-          name: "Checkbox",
-          widget: "checkbox",
-          type: "array",
-          typeChoices: ["array", "boolean", "string"],
-          additional: {
-            items: {
-              type: "string",
-              oneOf: [
-                { const: "first", title: "First Option" },
-                { const: "second", title: "Second Option" }
-              ]
-            }
-          },
-          widgetChoices: ["checkbox"],
-          id: 4
-        },
-        {
-          name: "Radio",
-          widget: "radio",
-          type: "array",
-          typeChoices: ["array", "string"],
-          widgetChoices: ["radio"],
-          additional: {
-            items: {
-              type: "string",
-              oneOf: [
-                { const: "first", title: "First Option" },
-                { const: "second", title: "Second Option" }
-              ]
-            }
-          },
-          id: 5
-        },
-        {
-          name: "Switch",
-          widget: "switch",
-          type: "array",
-          typeChoices: ["boolean"],
-          widgetChoices: ["switch"],
-          additional: {
-            items: {
-              type: "string",
-              oneOf: [
-                { const: "first", title: "First Option" },
-                { const: "second", title: "Second Option" }
-              ]
-            }
-          },
-          id: 6
-        },
-        {
-          name: "File",
-          widget: "file",
-          type: "string",
-          typeChoices: ["string"],
-          widgetChoices: ["file"],
-          additional: {},
-          id: 7
-        },
-        {
-          name: "Date/Time",
-          widget: "date-time",
-          type: "string",
-          typeChoices: ["string"],
-          widgetChoices: ["date-time", "date", "time"],
-          additional: {},
-          id: 8
-        },
-        {
-          name: "Color",
-          widget: "color-picker",
-          type: "string",
-          typeChoices: ["string"],
-          widgetChoices: ["color-picker"],
-          additional: {},
-          id: 9
-        }
-      ],
+      viewTab: {},
+      list1: list1,
       list2: [],
       formData: {}
     };
@@ -247,14 +130,18 @@ export default {
     removeAt(idx) {
       this.list2.splice(idx, 1);
     },
-      showEditor(idx) {
-        this.viewTab[idx] = 'editor';
-      },
+    showEditor(idx) {
+      this.viewTab[idx] = "editor";
+
+      this.$forceUpdate();
+    },
     cloneField(item) {
+      console.log(item);
       let json = {
         type: item.type,
         description: "",
         title: item.name,
+        "x-type-id": item.typeID,
         ...item.additional
       };
       if (item.widget !== "") {
@@ -267,10 +154,20 @@ export default {
           json["x-display"] = item.widget;
         }
       }
+
+      let fieldKey = Math.random()
+        .toString(36)
+        .replace(/[^a-z]+/g, "")
+        .substr(0, 5);
       console.log(json);
       let element = {
         id: idGlobal++,
         name: item.name,
+        fieldKey: fieldKey,
+        interalID: Math.random()
+          .toString(36)
+          .replace(/[^a-z]+/g, "")
+          .substr(0, 5),
         schema: {
           type: "object",
           required: [],
@@ -278,12 +175,7 @@ export default {
         }
       };
 
-      element["schema"]["properties"][
-        Math.random()
-          .toString(36)
-          .replace(/[^a-z]+/g, "")
-          .substr(0, 5)
-      ] = json;
+      element["schema"]["properties"][fieldKey] = json;
       return element;
     }
   }
@@ -291,22 +183,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.form-item {
-  padding-top: 40px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #e3e3e3;
-  background-color: #fff;
-}
-
-.form-item .edit-option {
-  display: none;
-}
-.form-item:hover {
-  padding-top: 16px;
-}
-.form-item:hover .edit-option {
-  display: inline-block;
-}
 .white-background {
   background-color: #fff;
   cursor: pointer;

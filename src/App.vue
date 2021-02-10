@@ -15,7 +15,7 @@
 export default {
   name: "app",
   components: {},
-  data(){
+  data() {
     return {
       pageTitle: process.env.VUE_APP_FORMULARIUM_TITLE
     };

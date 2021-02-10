@@ -1,7 +1,12 @@
 <template>
   <div class="home">
     <v-container>
-      <v-sheet color="white" elevation="1" class="my-4 pa-6" v-if="showAboutFormularium === 'show'">
+      <v-sheet
+        color="white"
+        elevation="1"
+        class="my-4 pa-6"
+        v-if="showAboutFormularium === 'show'"
+      >
         <h1>About</h1>
         <p>
           Formularium is a FOSS, privacy-first, and user-friendly toolkit for
@@ -39,7 +44,12 @@
               <v-btn text color="primary" :to="`/form/${item.node.id}`">
                 Form
               </v-btn>
-              <v-btn v-if="showPublicEditBtn === 'show'" text color="primary" :to="`/editor/${item.node.id}`">
+              <v-btn
+                v-if="showPublicEditBtn === 'show'"
+                text
+                color="primary"
+                :to="`/editor/${item.node.id}`"
+              >
                 Editor
               </v-btn>
             </v-card-actions>
@@ -59,7 +69,7 @@ export default {
   data() {
     return {
       showAboutFormularium: process.env.VUE_APP_SHOW_ABOUT_FORMULARIUM_PUBLIC,
-      showPublicEditBtn: process.env.VUE_APP_SHOW_FORM_EDITOR_BTN_PUBLIC,
+      showPublicEditBtn: process.env.VUE_APP_SHOW_FORM_EDITOR_BTN_PUBLIC
     };
   },
   apollo: {
