@@ -1,0 +1,13 @@
+{
+  allInternalForms {
+    edges {node {
+      id
+      active
+      name
+      teams {
+        name
+      }
+      description
+    }}
+  }
+}
