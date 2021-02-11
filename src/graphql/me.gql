@@ -1,0 +1,8 @@
+{
+  me {
+		firstName
+    lastName
+    email
+    id
+  }
+}
