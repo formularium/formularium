@@ -16,7 +16,6 @@
     <v-row v-if="editor" class="editor">
       <v-col class="py-0">
         {{ element }}
-        <br />d
         <v-jsf :schema="editorSettings" v-model="editorSettingsModel" />
         <v-btn @click="done()">
           done
