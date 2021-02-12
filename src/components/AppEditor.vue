@@ -31,7 +31,14 @@
         <v-btn v-on:click="download()" class="mx-2" dark small color="primary">
           Download Workspace
         </v-btn>
-        <v-btn v-on:click="save()" v-if="showSave" class="mx-2" dark small color="primary">
+        <v-btn
+          v-on:click="save()"
+          v-if="showSave"
+          class="mx-2"
+          dark
+          small
+          color="primary"
+        >
           Save Workspace
         </v-btn>
       </div>

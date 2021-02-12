@@ -1,6 +1,10 @@
 <template>
   <div>
-    <AppEditor :xml-code="this.code" :showSave="showSave" @saveForm="saveForm"></AppEditor>
+    <AppEditor
+      :xml-code="this.code"
+      :showSave="showSave"
+      @saveForm="saveForm"
+    ></AppEditor>
     <v-snackbar v-model="snackbar" :timeout="snackTimeout">
       {{ snackText }}
       <template v-slot:action="{ attrs }">
@@ -21,7 +25,8 @@ export default {
   components: { AppEditor },
 
   data() {
-    return { code: "",
+    return {
+      code: "",
       snackbar: false,
       snackText: null,
       snackTimeout: 2000,
