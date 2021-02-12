@@ -1,0 +1,10 @@
+mutation($formId: ID!,$name: String, $description: String, $active: Boolean, $xmlCode: String, $jsCode: String,) {
+  updateForm(formId:$formId description: $description, name:
+    $name, active: $active, xmlCode:$xmlCode, jsCode: $jsCode) {
+    form {
+      id
+      name
+      description
+    }
+  }
+}

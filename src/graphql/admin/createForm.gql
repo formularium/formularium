@@ -1,0 +1,9 @@
+mutation($name: String!, $description: String!) {
+  createForm(description: $description, name: $name) {
+    form {
+      id
+      name
+      description
+    }
+  }
+}

@@ -1,7 +1,6 @@
 <template>
   <div>
-      <v-container>
-
+    <v-container>
       <v-row dense v-if="allInternalForms">
         <v-col
           v-for="item in allInternalForms.edges"
@@ -18,47 +17,45 @@
               {{ item.node.description }}
             </v-card-text>
             <v-card-actions>
-              <v-btn text color="primary" :to="`/form/${item.node.id}`">
+              <v-btn text color="primary" @click.stop="showCreateForm = true">
                 Settings
               </v-btn>
-              <v-btn
-                text
-                color="primary"
-                :to="`/editor/${item.node.id}`"
-              >
+              <v-btn text color="primary" :to="`/editor/${item.node.id}`">
                 Editor
               </v-btn>
             </v-card-actions>
           </v-card>
-
         </v-col>
-      </v-row
-      >
-
-      </v-container>
+      </v-row>
+      <CreateForm v-model="showCreateForm" />
+    </v-container>
   </div>
-
 </template>
 
 <script>
-    import * as AUTH from "../../auth";
+import * as AUTH from "../../auth";
+import CreateForm from "../../components/AdminDashboard/CreateForm";
 export default {
   name: "AdminDashboard",
+  components: { CreateForm },
+  data() {
+    return { showCreateForm: false };
+  },
   apollo: {
     me: {
       query() {
         return require("../../graphql/admin/me.gql");
       },
-      skip () {
-          return AUTH.isLoggedIn() === false;
-        },
+      skip() {
+        return AUTH.isLoggedIn() === false;
+      }
     },
 
-      allInternalForms: {
-          query() {
-            return require("../../graphql/admin/allInternalForms.gql");
-          }
+    allInternalForms: {
+      query() {
+        return require("../../graphql/admin/allInternalForms.gql");
       }
+    }
   }
 };
 </script>
