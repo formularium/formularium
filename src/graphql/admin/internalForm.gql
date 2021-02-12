@@ -1,4 +1,4 @@
-query($id: ID!){internalForm(id: $id) {
+query($formID: ID!){internalForm(id: $formID) {
       jsCode
     xmlCode
     id

@@ -29,6 +29,9 @@
           <v-icon dark>mdi-stop</v-icon>
         </v-btn>
         <v-btn v-on:click="download()" class="mx-2" dark small color="primary">
+          Download Workspace
+        </v-btn>
+        <v-btn v-on:click="save()" v-if="showSave" class="mx-2" dark small color="primary">
           Save Workspace
         </v-btn>
       </div>
@@ -82,7 +85,7 @@ import FormEditor from "./FormEditor";
 import { saveAs } from "file-saver";
 export default {
   name: "AppEditor",
-  props: ["xmlCode"],
+  props: ["xmlCode", "showSave"],
   components: {
     FormRenderer,
     FormEditor,
@@ -217,6 +220,14 @@ export default {
       this.showFormEditor = true;
       console.log(formID);
       console.log("form editor");
+    },
+
+    save() {
+      let xml = Blockly.Xml.domToText(
+        Blockly.Xml.workspaceToDom(this.$refs["blockly-ws"].workspace)
+      );
+      let code = BlocklyJS.workspaceToCode(this.$refs["blockly-ws"].workspace);
+      this.$emit("saveForm", { xml: xml, code: code });
     }
   },
 

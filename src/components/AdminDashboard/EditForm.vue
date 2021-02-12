@@ -116,7 +116,7 @@ export default {
       },
       variables() {
         return {
-          id: this.$props.formID
+          formID: this.$props.formID
         };
       },
       skip() {

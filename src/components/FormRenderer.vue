@@ -336,7 +336,7 @@ export default {
         };
       },
       skip() {
-        return this.$props.formID === null;
+        return this.$props.formID === null || this.debuggerMode === false;
       }
     }
   }
