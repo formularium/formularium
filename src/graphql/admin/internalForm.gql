@@ -1,0 +1,12 @@
+query($id: ID!){internalForm(id: $id) {
+      jsCode
+    xmlCode
+    id
+    name
+    description
+    active
+      teams {
+    name
+    id
+  }
+}}
