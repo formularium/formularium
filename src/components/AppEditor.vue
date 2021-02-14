@@ -110,7 +110,7 @@ import FormEditor from "./FormEditor";
 import { saveAs } from "file-saver";
 export default {
   name: "AppEditor",
-  props: ["xmlCode", "showSave"],
+  props: ["xmlCode", "showSave", "schemas"],
   components: {
     FormRenderer,
     FormEditor,
@@ -124,7 +124,7 @@ export default {
       tab: null,
       jsonSchema: {},
       showFormEditor: false,
-      sectionSchemas: {},
+      sectionSchemas: this.$props.schemas,
       formEditorSchema: {},
       formEditorSchemaID: null,
 
@@ -267,7 +267,11 @@ export default {
         Blockly.Xml.workspaceToDom(this.$refs["blockly-ws"].workspace)
       );
       let code = BlocklyJS.workspaceToCode(this.$refs["blockly-ws"].workspace);
-      this.$emit("saveForm", { xml: xml, code: code });
+      this.$emit("saveForm", {
+        xml: xml,
+        code: code,
+        sectionSchemas: this.sectionSchemas
+      });
     },
 
     eventHandler(event) {

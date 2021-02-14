@@ -1,0 +1,5 @@
+mutation ($formId: ID!, $key: String!, $schema: String!) {
+  createOrUpdateSchema(formId: $formId, key: $key, schema: $schema) {
+    success
+  }
+}

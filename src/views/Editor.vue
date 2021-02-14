@@ -3,6 +3,7 @@
     <AppEditor
       :xml-code="this.code"
       :showSave="showSave"
+      :schemas="schemas"
       @saveForm="saveForm"
     ></AppEditor>
     <v-snackbar v-model="snackbar" :timeout="snackTimeout">
@@ -30,18 +31,44 @@ export default {
       snackbar: false,
       snackText: null,
       snackTimeout: 2000,
+      schemas: {},
       showSave: AUTH.isLoggedIn()
     };
   },
   watch: {
     form(form) {
       this.code = form.xmlCode;
+      console.log(form.schemas.edges);
+      for (let schema in form.schemas.edges) {
+        this.schemas[form.schemas.edges[schema].node.key] = JSON.parse(
+          form.schemas.edges[schema].node.schema
+        );
+      }
+      console.log(this.schemas);
     }
   },
 
   methods: {
     saveForm(data) {
-      console.log(data);
+      for (let section in data.sectionSchemas) {
+        this.$apollo
+          .mutate({
+            // Query
+            mutation: require("../graphql/admin/createOrUpdateSchema.gql"),
+            // Parameters
+            variables: {
+              formId: this.$route.params.id,
+              key: section,
+              schema: JSON.stringify(data.sectionSchemas[section])
+            }
+          })
+          .catch(error => {
+            console.error(error);
+            this.snackText = "An error occured while saving a schema" + error;
+            this.snackbar = true;
+          });
+      }
+
       this.$apollo
         .mutate({
           // Query

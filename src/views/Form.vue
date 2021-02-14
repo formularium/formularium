@@ -3,6 +3,7 @@
     <FormRenderer
       :code="code"
       :formID="id"
+      :sectionSchemas="schemas"
       :debuggerMode="false"
     ></FormRenderer>
   </div>
@@ -17,12 +18,17 @@ export default {
     FormRenderer
   },
   data() {
-    return { code: null, id: null };
+    return { code: null, id: null, schemas: {} };
   },
   watch: {
     form(form) {
       this.code = form.jsCode;
       this.id = form.id;
+      for (let schema in form.schemas.edges) {
+        this.schemas[form.schemas.edges[schema].node.key] = JSON.parse(
+          form.schemas.edges[schema].node.schema
+        );
+      }
     }
   },
   apollo: {

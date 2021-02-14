@@ -71,7 +71,7 @@
                         :inputElement="element"
                         @removeAt="removeAt"
                         @updateElement="updateElement"
-                        ></FormElement>
+                      ></FormElement>
                     </div>
                   </draggable>
                 </v-form>

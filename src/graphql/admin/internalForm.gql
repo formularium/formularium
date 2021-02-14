@@ -9,4 +9,13 @@ query($formID: ID!){internalForm(id: $formID) {
     name
     id
   }
+   schemas {
+        edges {
+          node {
+            schema
+            id
+            key
+          }
+        }
+      }
 }}

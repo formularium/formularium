@@ -80,9 +80,7 @@ export default {
       this.editorSettings = null;
       let formSettings = formEditor;
 
-      this.editorSettingsModel = this.element.schema.properties[
-        this.key
-      ];
+      this.editorSettingsModel = this.element.schema.properties[this.key];
 
       this.editorSettings = formSettings;
     },
@@ -93,19 +91,18 @@ export default {
       this.editor = false;
       console.log("save");
       console.log(this.element);
-      if(this.element.fieldKey !==this.key) {
-        this.element.schema.properties[this.key] = this.element.schema.properties[this.element.fieldKey];
+      if (this.element.fieldKey !== this.key) {
+        this.element.schema.properties[
+          this.key
+        ] = this.element.schema.properties[this.element.fieldKey];
         delete this.element.schema.properties[this.element.fieldKey];
         this.element.fieldKey = this.key;
       }
-      if (
-        this.element.schema.properties[this.key].required === true
-      ) {
+      if (this.element.schema.properties[this.key].required === true) {
         this.element.schema.required = [this.key];
       } else {
         this.element.schema.required = [];
       }
-
 
       this.$emit("updateElement");
     }

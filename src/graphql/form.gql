@@ -7,5 +7,14 @@ query($formID: ID!)
     name
     description
     active
+     schemas {
+        edges {
+          node {
+            schema
+            id
+            key
+          }
+        }
+      }
   }
 }
