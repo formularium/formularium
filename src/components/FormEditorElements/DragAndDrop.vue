@@ -52,7 +52,7 @@
                 <v-form ref="schemaForm">
                   <div>
                     <h3 contenteditable @blur="updateTitle">
-                      {{ schema.title }}
+                      {{ title }}
                     </h3>
                   </div>
                   <draggable
@@ -106,7 +106,10 @@ export default {
       list1.push(fe);
     }
     let list2 = [];
+    let title = "Form";
+
     if (this.$props.initialSchema) {
+      title = this.$props.initialSchema.title;
       for (let e in this.$props.initialSchema.properties) {
         let element = {
           id: idGlobal++,
@@ -115,12 +118,7 @@ export default {
             .toString(36)
             .replace(/[^a-z]+/g, "")
             .substr(0, 5),
-          schema: {
-            title: "Form title",
-            type: "object",
-            required: [],
-            properties: {}
-          }
+          schema: { type: "object", required: [], properties: {} }
         };
         element.schema.properties[e] = this.$props.initialSchema.properties[e];
         element.schema.required = this.$props.initialSchema.required;
@@ -136,6 +134,7 @@ export default {
       list1: list1,
       list2: list2,
       formData: {},
+      title: title,
       schema: {}
     };
   },

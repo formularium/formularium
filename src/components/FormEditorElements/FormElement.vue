@@ -1,8 +1,21 @@
 <template>
-  <div class="form-item">
+  <div
+    :class="{
+      'editor-active': editor === true,
+      'elevation-3': editor === true,
+      'form-item-not-editor': editor === false,
+      'form-item': true
+    }"
+  >
     <v-row>
       <v-col class="py-0">
-        <v-btn-toggle class="float-right edit-option">
+        <v-btn-toggle
+          :class="{
+            'float-right': editor === false,
+            'edit-option': editor === false,
+            'edit-option-hidden': editor === true
+          }"
+        >
           <v-btn x-small @click="showEditor()">
             <v-icon x-small>mdi-pencil</v-icon></v-btn
           >
@@ -16,7 +29,7 @@
     <v-row v-if="editor" class="editor">
       <v-col class="py-0">
         <v-jsf :schema="editorSettings" v-model="editorSettingsModel" />
-        <v-btn @click="done()">
+        <v-btn @click="done()" color="primary">
           done
         </v-btn>
       </v-col>
@@ -88,15 +101,25 @@ export default {
   background-color: #fff;
 }
 
-.editor {
-  background-color: #eee;
+.form-item.editor-active {
+  background: #fff;
+  width: 120%;
+  margin-left: -10%;
   padding: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #eee;
+}
+
+.form-item .edit-option-hidden {
+  display: none !important;
+  margin-top: 16px;
 }
 
 .form-item .edit-option {
   display: none;
 }
-.form-item:hover {
+.form-item-not-editor:hover {
   padding-top: 16px;
 }
 .form-item:hover .edit-option {
