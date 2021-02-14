@@ -11,6 +11,7 @@
     "@babel/polyfill": "^7.4.4",
     "@koumoul/vjsf": "^1.20.0",
     "@mdi/font": "^3.6.95",
+    "ajv": "^7.1.0",
     "blockly": "^3.20200924.4",
     "client-oauth2": "^4.3.3",
     "core-js": "^3.8.3",

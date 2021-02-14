@@ -141,7 +141,7 @@ function callJSONEditor(e) {
       .substr(0, 5);
   }
   var event = new CustomEvent("openSchemaEditor", {
-    detail: { id: e.sourceBlock_.data }
+    detail: { id: e.sourceBlock_.id }
   });
   window.dispatchEvent(event);
 
@@ -482,7 +482,32 @@ Blockly.JavaScript["formsection"] = function(block) {
 };
 
 Blockly.JavaScript["formsection_editor"] = function(block) {
-  return "";
+  console.log(block.id);
+  let text_name = block.getFieldValue("name");
+  let value_name = Blockly.JavaScript.valueToCode(
+    block,
+    "name",
+    Blockly.JavaScript.ORDER_ATOMIC
+  );
+  let checkbox_back_btn = block.getFieldValue("back_btn") == "TRUE";
+
+  let name = null;
+  if (value_name) {
+    name = value_name;
+  } else {
+    name = "'" + text_name + "'";
+  }
+
+  let code =
+    "" +
+    'render(JSON.stringify({ type: "form",  backBtn: ' +
+    checkbox_back_btn +
+    ", name: " +
+    name +
+    ', schemaID:"' +
+    block.id +
+    '"}));';
+  return code;
 };
 
 Blockly.JavaScript["length_validation"] = function(block) {

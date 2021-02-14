@@ -104,7 +104,7 @@ import JSInterpreter from "../lib/jsInterpreter";
 var openpgp = require("openpgp");
 
 export default {
-  props: ["code", "contextUpdate", "debuggerMode", "formID"],
+  props: ["code", "contextUpdate", "debuggerMode", "formID", "sectionSchemas"],
   name: "FormRenderer",
   data() {
     return {
@@ -207,6 +207,14 @@ export default {
           this.getNativeFunctions(),
           function(schema) {
             // on schema update
+            if (schema.schemaID !== undefined) {
+              schema.schema = {
+                type: "object",
+                properties: {}
+              };
+              schema.schema.properties[schema.name] =
+                that.sectionSchemas[schema.schemaID];
+            }
             that.schemaUpdate(schema);
           },
           function() {

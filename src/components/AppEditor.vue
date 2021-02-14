@@ -3,6 +3,7 @@
     <div id="renderer">
       <FormRenderer
         :code="code"
+        :sectionSchemas="this.sectionSchemas"
         :debuggerMode="true"
         @contextUpdate="updateContext"
         @jsonSchemaUpdate="updatejsonSchema"
@@ -48,6 +49,7 @@
         <v-tab>JSONSchema</v-tab>
         <v-tab>JS</v-tab>
         <v-tab>XML</v-tab>
+        <v-tab>Section Schemas</v-tab>
       </v-tabs>
       <v-tabs-items v-model="tab">
         <v-tab-item>
@@ -71,10 +73,26 @@
             {{ xml }}
           </code-highlight>
         </v-tab-item>
+        <v-tab-item>
+          <code-highlight language="json" class="code-preview">
+            {{ this.sectionSchemas }}
+          </code-highlight>
+        </v-tab-item>
       </v-tabs-items>
     </div>
 
-    <FormEditor :visible="showFormEditor" @close="showFormEditor = false" />
+    <FormEditor
+      v-if="showFormEditor"
+      :visible="showFormEditor"
+      :sectionID="formEditorSchemaID"
+      :initialSchema="formEditorSchema"
+      @updateSchema="updateSectionSchema"
+      @close="
+        showFormEditor = false;
+        formEditorSchema = {};
+        formEditorSchemaID = null;
+      "
+    />
   </div>
 </template>
 
@@ -106,6 +124,9 @@ export default {
       tab: null,
       jsonSchema: {},
       showFormEditor: false,
+      sectionSchemas: {},
+      formEditorSchema: {},
+      formEditorSchemaID: null,
 
       code: "",
       options: {
@@ -220,13 +241,25 @@ export default {
       this.context = payload;
     },
 
+    updateSectionSchema(section) {
+      console.log(section);
+      this.sectionSchemas[section.id] = Object.assign({}, section.schema);
+      console.log(this.sectionSchemas);
+
+      console.log(this.sectionSchemas);
+    },
+
     updatejsonSchema(payload) {
       this.jsonSchema = payload;
     },
     openSchemaFormEditor(formID) {
-      this.showFormEditor = true;
       console.log(formID);
+      console.log(this.sectionSchemas[formID]);
       console.log("form editor");
+
+      this.formEditorSchema = this.sectionSchemas[formID];
+      this.formEditorSchemaID = formID;
+      this.showFormEditor = true;
     },
 
     save() {
@@ -235,6 +268,28 @@ export default {
       );
       let code = BlocklyJS.workspaceToCode(this.$refs["blockly-ws"].workspace);
       this.$emit("saveForm", { xml: xml, code: code });
+    },
+
+    eventHandler(event) {
+      if (
+        event.type == Blockly.Events.CREATE &&
+        event.xml.attributes[0].value == "formsection_editor"
+      ) {
+        console.log(event.blockId);
+        if (!(event.blockId in this.sectionSchemas)) {
+          this.sectionSchemas[event.blockId] = {
+            type: "object",
+            title: "Form",
+            properties: {}
+          };
+        }
+        console.log(event.xml.attributes[0].value);
+      } else if (
+        event.type == Blockly.Events.DELETE &&
+        event.oldXml.attributes[0].value == "formsection_editor"
+      ) {
+        console.log("delete section");
+      }
     }
   },
 
@@ -248,8 +303,10 @@ export default {
   mounted() {
     const that = this;
     window.addEventListener("openSchemaEditor", function(e) {
+      console.log(e);
       that.openSchemaFormEditor(e.detail.id);
     });
+    this.$refs["blockly-ws"].workspace.addChangeListener(this.eventHandler);
   }
 };
 </script>

@@ -97,7 +97,7 @@
   "switch": {
     "name": "Switch",
     "widget": "switch",
-    "type": "array",
+    "type": "boolean",
     "typeChoices": [
       "boolean"
     ],

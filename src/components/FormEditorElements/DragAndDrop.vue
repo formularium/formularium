@@ -20,7 +20,7 @@
             <draggable
               class="dragArea list-group"
               :list="list1"
-              :group="{ name: 'people', pull: 'clone', put: false }"
+              :group="{ name: 'formElements', pull: 'clone', put: false }"
               :clone="cloneField"
               @change="log"
             >
@@ -51,13 +51,15 @@
               <v-sheet color="white" elevation="1" class="px-2 py-2">
                 <v-form ref="schemaForm">
                   <div>
-                    <h3 contenteditable>Form title</h3>
+                    <h3 contenteditable @blur="updateTitle">
+                      {{ schema.title }}
+                    </h3>
                   </div>
                   <draggable
                     class="dragArea list-group"
                     ghost-class="ghost"
                     :list="list2"
-                    group="people"
+                    group="formElements"
                     @change="log"
                   >
                     <div
@@ -67,6 +69,8 @@
                       <FormElement
                         :idX="idx"
                         :inputElement="element"
+                        @removeAt="removeAt"
+                        @updateElement="updateElement"
                       ></FormElement>
                     </div>
                   </draggable>
@@ -74,23 +78,6 @@
               </v-sheet> </v-col
           ></v-row>
         </v-container>
-      </v-col>
-
-      <v-col cols="2">
-        <v-sheet
-          color="white"
-          elevation="2"
-          class="px-2 py-2 mx-0"
-          height="100%"
-        >
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="title">
-                Field Attributes
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-sheet>
       </v-col>
     </v-row>
   </v-container>
@@ -105,23 +92,57 @@ import formElements from "../../assets/formElements";
 export default {
   name: "DragAndDrop",
   order: 3,
+  props: ["initialSchema"],
   components: {
     FormElement,
     draggable
   },
   data() {
+    console.log(this.$props.initialSchema);
     let list1 = [];
     for (let e in formElements) {
       let fe = formElements[e];
       fe["typeID"] = e;
       list1.push(fe);
     }
+    let list2 = [];
+    if (this.$props.initialSchema) {
+      for (let e in this.$props.initialSchema.properties) {
+        let element = {
+          id: idGlobal++,
+          fieldKey: e,
+          interalID: Math.random()
+            .toString(36)
+            .replace(/[^a-z]+/g, "")
+            .substr(0, 5),
+          schema: {
+            title: "Form title",
+            type: "object",
+            required: [],
+            properties: {}
+          }
+        };
+        element.schema.properties[e] = this.$props.initialSchema.properties[e];
+        element.schema.required = this.$props.initialSchema.required;
+
+        console.log(element);
+        list2.push(element);
+      }
+    }
+    console.log(list2);
+
     return {
       viewTab: {},
       list1: list1,
-      list2: [],
-      formData: {}
+      list2: list2,
+      formData: {},
+      schema: {}
     };
+  },
+  watch: {
+    list2() {
+      this.updateElement();
+    }
   },
   methods: {
     log: function(evt) {
@@ -130,11 +151,34 @@ export default {
     removeAt(idx) {
       this.list2.splice(idx, 1);
     },
+
+    updateElement() {
+      let new_schema = this.$props.initialSchema;
+      new_schema.required = [];
+      new_schema.properties = {};
+      console.log(this.list2);
+      for (let e in this.list2) {
+        new_schema.properties[this.list2[e].fieldKey] = this.list2[
+          e
+        ].schema.properties[this.list2[e].fieldKey];
+        for (let r in this.list2[e].schema.required) {
+          new_schema.required.push(this.list2[e].schema.required[r]);
+        }
+      }
+      this.schema = new_schema;
+      this.$emit("updateSchema", new_schema);
+    },
     showEditor(idx) {
       this.viewTab[idx] = "editor";
 
       this.$forceUpdate();
     },
+
+    updateTitle(title) {
+      console.log(title.target.innerText);
+      this.schema.title = title.target.innerText;
+    },
+
     cloneField(item) {
       console.log(item);
       let json = {

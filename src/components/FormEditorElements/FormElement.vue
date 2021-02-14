@@ -7,7 +7,7 @@
             <v-icon x-small>mdi-pencil</v-icon></v-btn
           >
 
-          <v-btn color="red" x-small @click="remove()">
+          <v-btn color="red" x-small @click="remove">
             <v-icon x-small light>mdi-delete</v-icon>
           </v-btn>
         </v-btn-toggle>
@@ -15,7 +15,6 @@
     </v-row>
     <v-row v-if="editor" class="editor">
       <v-col class="py-0">
-        {{ element }}
         <v-jsf :schema="editorSettings" v-model="editorSettingsModel" />
         <v-btn @click="done()">
           done
@@ -31,77 +30,51 @@
 </template>
 
 <script>
-import formElements from "../../assets/formElements";
+import formEditor from "../../assets/formEditor";
 export default {
   name: "FormElement",
   props: ["inputElement", "idX"],
   data() {
     return {
       formData: {},
-      element: this.inputElement,
+      element: this.$props.inputElement,
       editor: false,
       editorSettings: [],
       editorView: null,
       editorSettingsModel: {}
     };
   },
+
+  created() {
+    this.$emit("updateElement");
+  },
+
   methods: {
     showEditor() {
       this.editor = true;
       this.editorSettings = null;
-      let formSettigs = {
-        properties: {
-          title: {
-            type: "string",
-            title: "Field name"
-          },
-          description: {
-            title: "Help Text",
-            type: "string"
-          },
-          widget: {
-            type: "string",
-            enum:
-              formElements[
-                this.element.schema.properties[this.element.fieldKey][
-                  "x-type-id"
-                ]
-              ].widgetChoices
-          },
-          type: {
-            type: "string",
-            enum:
-              formElements[
-                this.element.schema.properties[this.element.fieldKey][
-                  "x-type-id"
-                ]
-              ].typeChoices
-          }
-        },
-        type: "object"
-      };
+      let formSettings = formEditor;
 
-      this.editorSettingsModel = {
-        title: this.element.schema.properties[this.element.fieldKey].title,
-        description: this.element.schema.properties[this.element.fieldKey]
-          .description,
-        type: this.element.schema.properties[this.element.fieldKey].type
-      };
+      this.editorSettingsModel = this.element.schema.properties[
+        this.element.fieldKey
+      ];
 
-      this.editorSettings = formSettigs;
+      this.editorSettings = formSettings;
     },
-    remove() {},
+    remove() {
+      this.$emit("removeAt", this.idX);
+    },
     done() {
       this.editor = false;
-      this.element.schema.properties[
-        this.element.fieldKey
-      ].title = this.editorSettingsModel.title;
-      this.element.schema.properties[
-        this.element.fieldKey
-      ].description = this.editorSettingsModel.description;
-      this.element.schema.properties[
-        this.element.fieldKey
-      ].type = this.editorSettingsModel.type;
+      if (
+        this.element.schema.properties[this.element.fieldKey].required === true
+      ) {
+        this.element.schema.required = [this.element.fieldKey];
+      } else {
+        this.element.schema.required = [];
+      }
+
+      this.$emit("updateElement");
     }
   }
 };
@@ -117,6 +90,7 @@ export default {
 
 .editor {
   background-color: #eee;
+  padding: 20px;
 }
 
 .form-item .edit-option {

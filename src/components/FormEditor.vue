@@ -9,13 +9,16 @@
           <v-toolbar-title>Form Editor</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="showModal = false">
+            <v-btn dark text @click="save()">
               Save
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <div class="formEditor">
-          <DragAndDrop></DragAndDrop>
+          <DragAndDrop
+            :initialSchema="this.initialSchema_"
+            @updateSchema="updateSchema"
+          ></DragAndDrop>
         </div>
       </v-card>
     </v-dialog>
@@ -29,7 +32,27 @@ import DragAndDrop from "./FormEditorElements/DragAndDrop";
 export default {
   name: "FormEditor",
   components: { DragAndDrop },
-  props: ["visible"],
+  data() {
+    console.log(this.$props.initialSchema);
+    return {
+      initialSchema_: this.$props.initialSchema,
+      schema: {}
+    };
+  },
+  props: ["visible", "sectionID", "initialSchema"],
+
+  methods: {
+    updateSchema(schema) {
+      this.schema = schema;
+    },
+    save() {
+      this.$emit("updateSchema", {
+        id: this.$props.sectionID,
+        schema: this.schema
+      });
+      this.showModal = false;
+    }
+  },
 
   computed: {
     showModal: {
