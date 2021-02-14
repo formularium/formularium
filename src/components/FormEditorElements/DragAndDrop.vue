@@ -71,7 +71,7 @@
                         :inputElement="element"
                         @removeAt="removeAt"
                         @updateElement="updateElement"
-                      ></FormElement>
+                        ></FormElement>
                     </div>
                   </draggable>
                 </v-form>
@@ -174,7 +174,6 @@ export default {
     },
 
     updateTitle(title) {
-      console.log(title.target.innerText);
       this.schema.title = title.target.innerText;
     },
 

@@ -27,7 +27,18 @@
       </v-col>
     </v-row>
     <v-row v-if="editor" class="editor">
-      <v-col class="py-0">
+      <v-row class="float-right" x>
+        <v-spacer cols="8"></v-spacer>
+        <v-col cols="4" sm="4">
+          <v-text-field
+            v-model="key"
+            label="Key"
+            dense
+            outlined
+          ></v-text-field> </v-col
+      ></v-row>
+
+      <v-col class="py-0" cols="12">
         <v-jsf :schema="editorSettings" v-model="editorSettingsModel" />
         <v-btn @click="done()" color="primary">
           done
@@ -51,6 +62,7 @@ export default {
     return {
       formData: {},
       element: this.$props.inputElement,
+      key: this.$props.inputElement.fieldKey,
       editor: false,
       editorSettings: [],
       editorView: null,
@@ -69,7 +81,7 @@ export default {
       let formSettings = formEditor;
 
       this.editorSettingsModel = this.element.schema.properties[
-        this.element.fieldKey
+        this.key
       ];
 
       this.editorSettings = formSettings;
@@ -79,13 +91,21 @@ export default {
     },
     done() {
       this.editor = false;
+      console.log("save");
+      console.log(this.element);
+      if(this.element.fieldKey !==this.key) {
+        this.element.schema.properties[this.key] = this.element.schema.properties[this.element.fieldKey];
+        delete this.element.schema.properties[this.element.fieldKey];
+        this.element.fieldKey = this.key;
+      }
       if (
-        this.element.schema.properties[this.element.fieldKey].required === true
+        this.element.schema.properties[this.key].required === true
       ) {
-        this.element.schema.required = [this.element.fieldKey];
+        this.element.schema.required = [this.key];
       } else {
         this.element.schema.required = [];
       }
+
 
       this.$emit("updateElement");
     }
