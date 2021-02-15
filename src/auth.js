@@ -88,7 +88,7 @@ export function clearAuthToken() {
 
 export function isLoggedIn() {
   let authToken = getAuthToken();
-  if(isTokenExpired(authToken)) {
+  if(authToken && isTokenExpired(authToken)) {
     clearAuthToken();
   }
   return !!authToken && !isTokenExpired(authToken);
