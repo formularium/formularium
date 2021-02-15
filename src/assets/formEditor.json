@@ -57,8 +57,7 @@
                         "enum":[
                            "string"
                         ],
-                       "x-display":"hidden"
-
+                        "x-display":"hidden"
                      },
                      "oneOf":{
                         "type":"array",
@@ -127,5 +126,137 @@
             }
          }
       },
+      {
+         "type":"object",
+         "title":"Validation",
+         "allOf":[
+            {
+               "properties":{
+                  "type":{
+                     "type":"string",
+                     "title":"Data type",
+                     "enum":[
+                        "string",
+                        "number",
+                        "integer",
+                        "boolean",
+                        "array",
+                        "object"
+                     ],
+                     "x-display":"hidden"
+                  }
+               },
+               "if":{
+                  "required":[
+                     "type"
+                  ],
+                  "properties":{
+                     "type":{
+                        "const":"array"
+                     }
+                  }
+               },
+               "then":{
+                  "properties":{
+                     "minItems":{
+                        "type":"integer",
+                        "title":"Minimum Items"
+                     },
+                     "maxItems":{
+                        "type":"integer",
+                        "title":"Maximum Items"
+                     }
+                  }
+               }
+            },
+            {
+               "properties":{
+                  "type":{
+                     "type":"string",
+                     "title":"Data type",
+                     "enum":[
+                        "string",
+                        "number",
+                        "integer",
+                        "boolean",
+                        "array",
+                        "object"
+                     ],
+                     "x-display":"hidden"
+                  }
+               },
+               "if":{
+                  "required":[
+                     "type"
+                  ],
+                  "properties":{
+                     "type":{
+                        "const":"number"
+                     }
+                  }
+               },
+               "then":{
+                  "properties":{
+                     "minimum":{
+                        "type":"integer",
+                        "title":"Minimum"
+                     },
+                     "maximum":{
+                        "type":"integer",
+                        "title":"Maximum"
+                     },
+                     "multipleOf":{
+                        "type":"integer",
+                        "title":"Multiple of "
+                     }
+                  }
+               }
+            },
+            {
+               "properties":{
+                  "type":{
+                     "type":"string",
+                     "title":"Data type",
+                     "enum":[
+                        "string",
+                        "number",
+                        "integer",
+                        "boolean",
+                        "array",
+                        "object"
+                     ],
+                     "x-display":"hidden"
+                  }
+               },
+               "if":{
+                  "required":[
+                     "type"
+                  ],
+                  "properties":{
+                     "type":{
+                        "const":"string"
+                     }
+                  }
+               },
+               "then":{
+                  "properties":{
+                     "minLength":{
+                        "type":"integer",
+                        "title":"Minimum Length"
+                     },
+                     "maxLength":{
+                        "type":"integer",
+                        "title":"Maximum Length"
+                     },
+                     "pattern":{
+                        "type":"string",
+                        "format":"regex",
+                        "title":"Regular Expression Pattern"
+                     }
+                  }
+               }
+            }
+         ]
+      }
    ]
 }
