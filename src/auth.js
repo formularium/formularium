@@ -88,6 +88,9 @@ export function clearAuthToken() {
 
 export function isLoggedIn() {
   let authToken = getAuthToken();
+  if(isTokenExpired(authToken)) {
+    clearAuthToken();
+  }
   return !!authToken && !isTokenExpired(authToken);
 }
 
@@ -105,7 +108,6 @@ function getTokenExpirationDate(encodedToken) {
 
   let date = new Date(0);
   date.setUTCSeconds(token.exp);
-
   return date;
 }
 
