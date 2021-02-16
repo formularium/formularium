@@ -26,9 +26,18 @@
         </v-btn-toggle>
       </v-col>
     </v-row>
-    <v-row v-if="editor" class="editor">
-      <v-row class="float-right" x>
-        <v-spacer cols="8"></v-spacer>
+    <v-row v-if="editor" class="editor py-0">
+
+      <v-col cols="12">
+        <v-jsf :schema="editorSettings" v-model="editorSettingsModel" >
+        </v-jsf>
+
+      </v-col>
+            <v-row class="float-right my-2 py-1 actions" >
+        <v-col cols="8" >
+          <v-btn @click="done()" color="primary">
+          done
+        </v-btn></v-col>
         <v-col cols="4" sm="4">
           <v-text-field
             v-model="key"
@@ -37,13 +46,6 @@
             outlined
           ></v-text-field> </v-col
       ></v-row>
-
-      <v-col class="py-0" cols="12">
-        <v-jsf :schema="editorSettings" v-model="editorSettingsModel" />
-        <v-btn @click="done()" color="primary">
-          done
-        </v-btn>
-      </v-col>
     </v-row>
     <v-row v-else>
       <v-col class="py-0">
@@ -123,11 +125,16 @@ export default {
   width: 120%;
   margin-left: -10%;
   padding: 20px;
+  padding-bottom: 0px;
   margin-top: 10px;
   margin-bottom: 10px;
   border: 1px solid #eee;
 }
 
+.actions {
+  border-top: 2px solid #eee;
+  padding-bottom: 0px;
+}
 .form-item .edit-option-hidden {
   display: none !important;
   margin-top: 16px;

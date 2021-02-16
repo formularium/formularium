@@ -344,7 +344,7 @@ export default {
         };
       },
       skip() {
-        return this.$props.formID === null || this.debuggerMode === false;
+        return this.$props.formID === null || this.debuggerMode === true;
       }
     }
   }
