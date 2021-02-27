@@ -12,6 +12,19 @@
     ],
     "id": 1
   },
+  "object": {
+    "name": "Object",
+    "widget": null,
+    "type": "object",
+    "typeChoices": [
+      "object"
+    ],
+    "additional": {},
+    "widgetChoices": [
+      ""
+    ],
+    "id": 1
+  },
   "long-text": {
     "name": "Long Text",
     "widget": "textarea",

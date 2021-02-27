@@ -1,4 +1,7 @@
 {
+
+   "definitions": {
+      "jsonschema": {
    "type":"object",
    "x-display":"tabs",
    "x-props":{
@@ -22,6 +25,8 @@
                "title":"Required",
                "x-display":"checkbox"
             },
+            "Aschema":   { "$ref": "#/definitions/jsonschema" },
+
             "type":{
                "type":"string",
                "title":"Data type",
@@ -36,6 +41,7 @@
                "x-display":"hidden"
             }
          },
+         "allOf": [{
          "if":{
             "required":[
                "type"
@@ -79,7 +85,28 @@
                   }
                }
             }
-         }
+         }},
+
+            {
+         "if":{
+            "required":[
+               "type"
+            ],
+            "properties":{
+               "type":{
+                  "const":"object"
+               }
+            }
+         },
+         "then":{
+            "properties":{
+               "items":{
+                  "schema":  "#/definitions/jsonschema"
+               }
+            }
+         }}
+
+         ]
       },
       {
          "type":"object",
@@ -259,4 +286,11 @@
          ]
       }
    ]
+}},
+"type": "object",
+
+  "properties": {
+    "schema": { "$ref": "#/definitions/jsonschema" }
+  }
+
 }
