@@ -108,6 +108,9 @@ import "vue-code-highlight/themes/prism-coy.css";
 import CodeHighlight from "vue-code-highlight/src/CodeHighlight.vue";
 import FormEditor from "./FormEditor";
 import { saveAs } from "file-saver";
+
+import { SchemaTree } from '@stoplight/json-schema-tree';
+
 export default {
   name: "AppEditor",
   props: ["xmlCode", "showSave", "schemas"],
@@ -211,6 +214,7 @@ export default {
           <category name="Context" colour="%{BKY_LOOPS_HUE}">
             <block type="fieldfromcontext"></block>
             <block type="getcontext"></block>
+            <block type="autocomplete_context"></block>
           </category>
 
         </xml>`
@@ -244,9 +248,11 @@ export default {
     updateSectionSchema(section) {
       console.log(section);
       this.sectionSchemas[section.id] = Object.assign({}, section.schema);
-      console.log(this.sectionSchemas);
-
-      console.log(this.sectionSchemas);
+      const paths = []
+      for(let schema in this.sectionSchemas) {
+        paths.concat(this.resolveSchemaPaths(this.sectionSchemas[schema]));
+      }
+      console.log(paths);
     },
 
     updatejsonSchema(payload) {
@@ -294,13 +300,31 @@ export default {
       ) {
         console.log("delete section");
       }
-    }
+    },
+
+    resolveSchemaPaths(schema) {
+      console.log("treeee")
+      const tree = new SchemaTree(schema);
+      tree.populate();
+
+      console.log(tree.root);
+  }
+
   },
 
   watch: {
     xmlCode(xmlCode) {
       var xml = Blockly.Xml.textToDom(xmlCode);
       Blockly.Xml.domToWorkspace(xml, this.$refs["blockly-ws"].workspace);
+    },
+
+    sectionSchemas(schemas) {
+      const paths = [];
+      console.log("updated!11!");
+      for(let schema in schemas) {
+        console.log(this.resolveSchemaPaths(schemas[schema]));
+        paths.concat(this.resolveSchemaPaths(schemas[schema]));
+      }
     }
   },
 
