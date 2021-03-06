@@ -24,12 +24,13 @@ CustomFields.Typeahead.prototype.widgetCreate_ = function() {
   htmlInput.className = 'blocklyHtmlInput';
   htmlInput.setAttribute('spellcheck', this.spellcheck_);
 
-  this.autovalues_ = [
-      "a",
-      "ac",
-      "acab",
+  console.log( window.jsonSchemaPaths);
+  if(window.jsonSchemaPaths !== undefined) {
+    this.autovalues_ = Object.keys(window.jsonSchemaPaths);
+  } else {
+    this.autovalues_ = [];
+  }
 
-  ];
   var datalist = document.createElement('datalist');
   for (var i=0; i < this.autovalues_.length; i++) {
     var option = document.createElement('option');

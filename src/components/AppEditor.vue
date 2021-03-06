@@ -248,11 +248,10 @@ export default {
     updateSectionSchema(section) {
       console.log(section);
       this.sectionSchemas[section.id] = Object.assign({}, section.schema);
-      const paths = []
+      window.jsonSchemaPaths = {};
       for(let schema in this.sectionSchemas) {
-        paths.concat(this.resolveSchemaPaths(this.sectionSchemas[schema]));
+        window.jsonSchemaPaths[schema] = this.resolveSchemaPaths(this.sectionSchemas[schema])
       }
-      console.log(paths);
     },
 
     updatejsonSchema(payload) {
@@ -303,11 +302,11 @@ export default {
     },
 
     resolveSchemaPaths(schema) {
-      console.log("treeee")
       const tree = new SchemaTree(schema);
       tree.populate();
 
       console.log(tree.root);
+      return tree
   }
 
   },
@@ -316,15 +315,6 @@ export default {
     xmlCode(xmlCode) {
       var xml = Blockly.Xml.textToDom(xmlCode);
       Blockly.Xml.domToWorkspace(xml, this.$refs["blockly-ws"].workspace);
-    },
-
-    sectionSchemas(schemas) {
-      const paths = [];
-      console.log("updated!11!");
-      for(let schema in schemas) {
-        console.log(this.resolveSchemaPaths(schemas[schema]));
-        paths.concat(this.resolveSchemaPaths(schemas[schema]));
-      }
     }
   },
 
