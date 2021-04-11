@@ -23,7 +23,13 @@
                     v-model="model"
                     :schema="schema.schema"
                     :options="options"
-                  />
+                  >
+                    <template slot="custom-tiptap" slot-scope="context">
+                      <tiptap-renderer-view
+                        v-bind="context"
+                      ></tiptap-renderer-view>
+                    </template>
+                  </v-jsf>
                   <v-row align="center" justify="center">
                     <v-btn
                       color="primary"
@@ -101,11 +107,14 @@ import "@koumoul/vjsf/lib/VJsf.css";
 import "@koumoul/vjsf/lib/deps/third-party.js";
 import PDFGenerator from "../lib/pdfGenerator";
 import JSInterpreter from "../lib/jsInterpreter";
+import TiptapRendererView from "../editor/tiptap/tiptap-renderer-view";
+
 var openpgp = require("openpgp");
 
 export default {
   props: ["code", "contextUpdate", "debuggerMode", "formID", "sectionSchemas"],
   name: "FormRenderer",
+  components: { TiptapRendererView },
   data() {
     return {
       formData: {},
