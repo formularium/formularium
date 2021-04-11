@@ -109,8 +109,6 @@ import CodeHighlight from "vue-code-highlight/src/CodeHighlight.vue";
 import FormEditor from "./FormEditor";
 import { saveAs } from "file-saver";
 
-import { SchemaTree } from '@stoplight/json-schema-tree';
-
 export default {
   name: "AppEditor",
   props: ["xmlCode", "showSave", "schemas"],
@@ -250,8 +248,10 @@ export default {
       this.sectionSchemas[section.id] = Object.assign({}, section.schema);
       window.jsonSchemaPaths = {};
       for(let schema in this.sectionSchemas) {
+        console.log(this.sectionSchemas[schema]);
         window.jsonSchemaPaths[schema] = this.resolveSchemaPaths(this.sectionSchemas[schema])
       }
+      console.log(window.jsonSchemaPaths)
     },
 
     updatejsonSchema(payload) {
@@ -266,6 +266,8 @@ export default {
       this.formEditorSchemaID = formID;
       this.showFormEditor = true;
     },
+
+
 
     save() {
       let xml = Blockly.Xml.domToText(
@@ -301,12 +303,20 @@ export default {
       }
     },
 
-    resolveSchemaPaths(schema) {
-      const tree = new SchemaTree(schema);
-      tree.populate();
-
-      console.log(tree.root);
-      return tree
+    resolveSchemaPaths(schema, prefix="") {
+      var results = []
+      if(schema !== undefined && "properties" in schema){
+        for(let k in schema.properties) {
+          results.push(k);
+          if(prefix === "") {
+            prefix = k;
+          } else  {
+            prefix = prefix+"."+k
+          }
+          results.concat(this.resolveSchemaPaths(schema[k], prefix))
+        }
+      }
+      return results;
   }
 
   },
