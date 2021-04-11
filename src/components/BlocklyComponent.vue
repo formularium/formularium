@@ -22,6 +22,7 @@ export default {
     if (!options.toolbox) {
       options.toolbox = this.$refs["blocklyToolbox"];
     }
+    options.media = "/media/";
     this.workspace = Blockly.inject(this.$refs["blocklyDiv"], options);
   }
 };
