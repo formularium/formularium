@@ -5,9 +5,38 @@
       "grow":true
    },
    "allOf":[
+
       {
          "type":"object",
-         "title":"General",
+         "title":"Content",
+         "allOf":[
+            {
+               "properties":{
+                  "x-display":{
+                     "type":"string",
+                     "x-display":"hidden"
+                  }
+               },
+               "if":{
+                  "required":[
+                     "x-display"
+                  ],
+                  "properties":{
+                     "x-display":{
+                        "const":"custom-tiptap"
+                     }
+                  }
+               },
+               "then":{
+                  "properties":{
+                     "html":{
+                        "type":"string",
+                        "x-display": "custom-tiptap"
+                     }
+                  }
+               },
+               "else": {
+
          "properties":{
             "title":{
                "type":"string",
@@ -22,6 +51,7 @@
                "title":"Required",
                "x-display":"checkbox"
             },
+
             "type":{
                "type":"string",
                "title":"Data type",
@@ -35,8 +65,20 @@
                ],
                "x-display":"hidden"
             }
-         },
-         "if":{
+         }
+               }
+
+
+
+            },
+            {
+               "properties":{
+                  "type":{
+                     "type":"string",
+                     "x-display":"hidden"
+                  }
+               },
+              "if":{
             "required":[
                "type"
             ],
@@ -80,6 +122,10 @@
                }
             }
          }
+
+
+            }
+         ]
       },
       {
          "type":"object",
@@ -110,7 +156,8 @@
                   "expansion-panels",
                   "tabs",
                   "hidden",
-                  "textarea"
+                  "textarea",
+                  "custom-tiptap"
                ]
             },
             "format":{

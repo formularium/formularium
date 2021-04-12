@@ -24,6 +24,7 @@ import "@babel/polyfill";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@mdi/font/css/materialdesignicons.css";
 import { createProvider } from "./vue-apollo";
+import { TiptapVuetifyPlugin } from "tiptap-vuetify";
 
 const _global =
   (typeof window !== "undefined" && window) ||
@@ -31,6 +32,11 @@ const _global =
   {};
 _global.markdownit = require("markdown-it");
 Vue.component("draggable", Draggable);
+
+Vue.use(TiptapVuetifyPlugin, {
+  vuetify,
+  iconsGroup: "mdi"
+});
 new Vue({
   router,
   store,

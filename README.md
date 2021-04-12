@@ -1,5 +1,5 @@
 # Formularium α
-> :warning: **Formularium is still under heavy development**: 
+> :warning: **Formularium is still under heavy development! If you are interested in learning more about formularium or even want to contribute, consider [joining our slack channel](https://join.slack.com/t/formularium/shared_invite/zt-ooxr8hzr-LMYSF93V~sLwqYaQwiEACg)** 
 
 ### About
 Formularium is a FOSS, privacy-first, and user-friendly toolkit for small to medium-sized municipalities (1-150k inhabitants) to support them in making their public services available online.

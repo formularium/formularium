@@ -37,6 +37,18 @@
     "additional": {},
     "id": 3
   },
+  "htmlContent": {
+    "name": "Content",
+    "widget": "custom-tiptap",
+    "type": "string",
+    "typeChoices": [
+      "string"
+    ],
+    "widgetChoices": ["custom-tiptap"],
+    "additional": {
+    },
+    "id": 13
+  },
   "checkbox": {
     "name": "Checkbox",
     "widget": "checkbox",

@@ -28,7 +28,11 @@
     </v-row>
     <v-row v-if="editor" class="editor py-0">
       <v-col cols="12">
-        <v-jsf :schema="editorSettings" v-model="editorSettingsModel"> </v-jsf>
+        <v-jsf :schema="editorSettings" v-model="editorSettingsModel">
+          <template slot="custom-tiptap" slot-scope="context">
+            <tiptap-editor-view v-bind="context" />
+          </template>
+        </v-jsf>
       </v-col>
       <v-row class="float-right my-2 py-1 actions">
         <v-col cols="8">
@@ -47,7 +51,11 @@
     </v-row>
     <v-row v-else>
       <v-col class="py-0">
-        <v-jsf :schema="element.schema" v-model="formData" />
+        <v-jsf :schema="element.schema" v-model="formData">
+          <template slot="custom-tiptap" slot-scope="context">
+            <tiptap-renderer-view v-bind="context"></tiptap-renderer-view>
+          </template>
+        </v-jsf>
       </v-col>
     </v-row>
   </div>
@@ -55,8 +63,11 @@
 
 <script>
 import formEditor from "../../assets/formEditor";
+import TiptapEditorView from "../../editor/tiptap/tiptap-editor-view";
+import TiptapRendererView from "../../editor/tiptap/tiptap-renderer-view";
 export default {
   name: "FormElement",
+  components: { TiptapRendererView, TiptapEditorView },
   props: ["inputElement", "idX"],
   data() {
     return {
