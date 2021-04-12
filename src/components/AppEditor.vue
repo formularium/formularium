@@ -244,21 +244,32 @@ export default {
     },
 
     updateSectionSchema(section) {
-      console.log(section);
+      let name = this.sectionSchemas[section.id].name;
       this.sectionSchemas[section.id] = Object.assign({}, section.schema);
+      this.sectionSchemas[section.id].name = name;
+      this.updateSectionPaths();
+    },
+
+    updateSectionPaths() {
       window.jsonSchemaPaths = {};
-      for(let schema in this.sectionSchemas) {
+      for (let schema in this.sectionSchemas) {
         console.log(this.sectionSchemas[schema]);
-        window.jsonSchemaPaths[schema] = this.resolveSchemaPaths(this.sectionSchemas[schema])
+        let key = schema;
+        if (this.sectionSchemas[schema].name !== undefined) {
+          key = this.sectionSchemas[schema].name;
+        }
+        window.jsonSchemaPaths[key] = this.resolveSchemaPaths(
+          this.sectionSchemas[schema]
+        );
       }
-      console.log(window.jsonSchemaPaths)
     },
 
     updatejsonSchema(payload) {
       this.jsonSchema = payload;
     },
-    openSchemaFormEditor(formID) {
+    openSchemaFormEditor(formID, name) {
       console.log(formID);
+      console.log(name);
       console.log(this.sectionSchemas[formID]);
       console.log("form editor");
 
@@ -266,8 +277,6 @@ export default {
       this.formEditorSchemaID = formID;
       this.showFormEditor = true;
     },
-
-
 
     save() {
       let xml = Blockly.Xml.domToText(
@@ -286,41 +295,46 @@ export default {
         event.type == Blockly.Events.CREATE &&
         event.xml.attributes[0].value == "formsection_editor"
       ) {
-        console.log(event.blockId);
         if (!(event.blockId in this.sectionSchemas)) {
           this.sectionSchemas[event.blockId] = {
             type: "object",
             title: "Form",
+            name: null,
             properties: {}
           };
         }
-        console.log(event.xml.attributes[0].value);
+        this.updateSectionPaths();
       } else if (
         event.type == Blockly.Events.DELETE &&
         event.oldXml.attributes[0].value == "formsection_editor"
       ) {
-        console.log("delete section");
+        this.updateSectionPaths();
+      } else if (
+        event.type == Blockly.Events.CHANGE &&
+        event.element == "field" &&
+        event.name == "name" &&
+        event.blockId in this.sectionSchemas
+      ) {
+        this.sectionSchemas[event.blockId].name = event.newValue;
+        this.updateSectionPaths();
       }
     },
-
-    resolveSchemaPaths(schema, prefix="") {
-      var results = []
-      if(schema !== undefined && "properties" in schema){
-        for(let k in schema.properties) {
+    resolveSchemaPaths(schema, prefix = "") {
+      var results = [];
+      if (schema !== undefined && "properties" in schema) {
+        for (let k in schema.properties) {
           results.push(k);
-          if(prefix === "") {
+          if (prefix === "") {
             prefix = k;
-          } else  {
-            prefix = prefix+"."+k
+          } else {
+            prefix = prefix + "." + k;
           }
-          results.concat(this.resolveSchemaPaths(schema[k], prefix))
+          results.concat(this.resolveSchemaPaths(schema[k], prefix));
         }
       }
       return results;
-  }
-
+    }
   },
-
   watch: {
     xmlCode(xmlCode) {
       var xml = Blockly.Xml.textToDom(xmlCode);
@@ -332,7 +346,11 @@ export default {
     const that = this;
     window.addEventListener("openSchemaEditor", function(e) {
       console.log(e);
-      that.openSchemaFormEditor(e.detail.id);
+      let name = null;
+      if (e.detail.name !== "") {
+        name = e.detail.name;
+      }
+      that.openSchemaFormEditor(e.detail.id, name);
     });
     this.$refs["blockly-ws"].workspace.addChangeListener(this.eventHandler);
   }

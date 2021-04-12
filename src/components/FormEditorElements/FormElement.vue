@@ -27,17 +27,15 @@
       </v-col>
     </v-row>
     <v-row v-if="editor" class="editor py-0">
-
       <v-col cols="12">
-        <v-jsf :schema="editorSettings" v-model="editorSettingsModel" >
-        </v-jsf>
-
+        <v-jsf :schema="editorSettings" v-model="editorSettingsModel"> </v-jsf>
       </v-col>
-            <v-row class="float-right my-2 py-1 actions" >
-        <v-col cols="8" >
+      <v-row class="float-right my-2 py-1 actions">
+        <v-col cols="8">
           <v-btn @click="done()" color="primary">
-          done
-        </v-btn></v-col>
+            done
+          </v-btn></v-col
+        >
         <v-col cols="4" sm="4">
           <v-text-field
             v-model="key"
