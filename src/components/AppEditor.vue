@@ -108,6 +108,7 @@ import "vue-code-highlight/themes/prism-coy.css";
 import CodeHighlight from "vue-code-highlight/src/CodeHighlight.vue";
 import FormEditor from "./FormEditor";
 import { saveAs } from "file-saver";
+
 export default {
   name: "AppEditor",
   props: ["xmlCode", "showSave", "schemas"],
@@ -211,6 +212,7 @@ export default {
           <category name="Context" colour="%{BKY_LOOPS_HUE}">
             <block type="fieldfromcontext"></block>
             <block type="getcontext"></block>
+            <block type="autocomplete_context"></block>
           </category>
 
         </xml>`
@@ -242,18 +244,32 @@ export default {
     },
 
     updateSectionSchema(section) {
-      console.log(section);
+      let name = this.sectionSchemas[section.id].name;
       this.sectionSchemas[section.id] = Object.assign({}, section.schema);
-      console.log(this.sectionSchemas);
+      this.sectionSchemas[section.id].name = name;
+      this.updateSectionPaths();
+    },
 
-      console.log(this.sectionSchemas);
+    updateSectionPaths() {
+      window.jsonSchemaPaths = {};
+      for (let schema in this.sectionSchemas) {
+        console.log(this.sectionSchemas[schema]);
+        let key = schema;
+        if (this.sectionSchemas[schema].name !== undefined) {
+          key = this.sectionSchemas[schema].name;
+        }
+        window.jsonSchemaPaths[key] = this.resolveSchemaPaths(
+          this.sectionSchemas[schema]
+        );
+      }
     },
 
     updatejsonSchema(payload) {
       this.jsonSchema = payload;
     },
-    openSchemaFormEditor(formID) {
+    openSchemaFormEditor(formID, name) {
       console.log(formID);
+      console.log(name);
       console.log(this.sectionSchemas[formID]);
       console.log("form editor");
 
@@ -279,24 +295,46 @@ export default {
         event.type == Blockly.Events.CREATE &&
         event.xml.attributes[0].value == "formsection_editor"
       ) {
-        console.log(event.blockId);
         if (!(event.blockId in this.sectionSchemas)) {
           this.sectionSchemas[event.blockId] = {
             type: "object",
             title: "Form",
+            name: null,
             properties: {}
           };
         }
-        console.log(event.xml.attributes[0].value);
+        this.updateSectionPaths();
       } else if (
         event.type == Blockly.Events.DELETE &&
         event.oldXml.attributes[0].value == "formsection_editor"
       ) {
-        console.log("delete section");
+        this.updateSectionPaths();
+      } else if (
+        event.type == Blockly.Events.CHANGE &&
+        event.element == "field" &&
+        event.name == "name" &&
+        event.blockId in this.sectionSchemas
+      ) {
+        this.sectionSchemas[event.blockId].name = event.newValue;
+        this.updateSectionPaths();
       }
+    },
+    resolveSchemaPaths(schema, prefix = "") {
+      var results = [];
+      if (schema !== undefined && "properties" in schema) {
+        for (let k in schema.properties) {
+          results.push(k);
+          if (prefix === "") {
+            prefix = k;
+          } else {
+            prefix = prefix + "." + k;
+          }
+          results.concat(this.resolveSchemaPaths(schema[k], prefix));
+        }
+      }
+      return results;
     }
   },
-
   watch: {
     xmlCode(xmlCode) {
       var xml = Blockly.Xml.textToDom(xmlCode);
@@ -308,7 +346,11 @@ export default {
     const that = this;
     window.addEventListener("openSchemaEditor", function(e) {
       console.log(e);
-      that.openSchemaFormEditor(e.detail.id);
+      let name = null;
+      if (e.detail.name !== "") {
+        name = e.detail.name;
+      }
+      that.openSchemaFormEditor(e.detail.id, name);
     });
     this.$refs["blockly-ws"].workspace.addChangeListener(this.eventHandler);
   }

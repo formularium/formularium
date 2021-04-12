@@ -141,7 +141,10 @@ function callJSONEditor(e) {
       .substr(0, 5);
   }
   var event = new CustomEvent("openSchemaEditor", {
-    detail: { id: e.sourceBlock_.id }
+    detail: {
+      id: e.sourceBlock_.id,
+      name: e.sourceBlock_.getFieldValue("name")
+    }
   });
   window.dispatchEvent(event);
 
