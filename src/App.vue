@@ -1,8 +1,8 @@
 <template>
-  <div id="app">
+  <div>
     <v-app>
       <v-main>
-        <v-toolbar>
+        <v-toolbar role="banner">
           <v-toolbar-title v-html="pageTitle"></v-toolbar-title>
           <v-spacer></v-spacer>
 

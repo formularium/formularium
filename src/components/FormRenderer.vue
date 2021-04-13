@@ -1,5 +1,5 @@
 <template>
-  <div class="grey lighten-5 background">
+  <div class="grey lighten-5 background" role="main">
     <v-container fill-height fluid>
       <v-row align="center" justify="center">
         <v-col
@@ -56,7 +56,7 @@
               </v-row>
             </v-form>
             <div v-if="schema.type === 'navigation'">
-              <h2 class="pl-3 pt-3 my-3 title">{{ schema.schema.title }}</h2>
+              <h1 class="pl-3 pt-3 my-3 title">{{ schema.schema.title }}</h1>
 
               <p class="pl-3 ">{{ schema.schema.description }}</p>
               <v-row fluid align="center" justify="center">

@@ -5,6 +5,7 @@
         color="white"
         elevation="1"
         class="my-4 pa-6"
+        role="content"
         v-if="showAboutFormularium === 'show'"
       >
         <h1>About</h1>
@@ -14,7 +15,7 @@
           them in making their public services available online.
         </p>
         <p>
-          <b>Why?</b>: We feel that municipalities are a backbone to democracy
+          <strong>Why?</strong>: We feel that municipalities are a backbone to democracy
           but often are left behind when extending the democratic government to
           the digital world. We think that neither existing vendors nor the
           federal government provides the software components and the concepts
@@ -41,11 +42,12 @@
               {{ item.node.description }}
             </v-card-text>
             <v-card-actions>
-              <v-btn text color="primary" :to="`/form/${item.node.id}`">
+              <v-btn text color="primary" :to="`/form/${item.node.id}`" :aria-label="item.node.name + ' form'">
                 Form
               </v-btn>
               <v-btn
                 v-if="showPublicEditBtn === 'show'"
+                 :aria-label="item.node.name + ' editor'"
                 text
                 color="primary"
                 :to="`/editor/${item.node.id}`"
