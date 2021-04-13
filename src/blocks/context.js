@@ -1,5 +1,7 @@
 import * as Blockly from "blockly/core";
 
+import propertiesToArray from "../utils/propertiesToArray";
+
 var CustomFields = CustomFields || {};
 CustomFields.Typeahead = function(text) {
   CustomFields.Typeahead.superClass_.constructor.call(this, text);
@@ -7,39 +9,11 @@ CustomFields.Typeahead = function(text) {
 };
 
 Blockly.utils.object.inherits(CustomFields.Typeahead, Blockly.FieldTextInput);
-//Blockly.utils.object.inherits(CustomFields.Typeahead, Blockly.FieldDropdown);
+
 CustomFields.Typeahead.fromJson = function(options) {
   return new CustomFields.Typeahead(options["pitch"]);
 };
 Blockly.fieldRegistry.register("field_typeahead", CustomFields.Typeahead);
-
-// Taken and modified from https://stackoverflow.com/a/53620876
-function propertiesToArray(obj) {
-    const isObject = val =>
-        typeof val === 'object';
-
-    const addDelimiter = (a, b) =>
-        a ? `${a}.${b}` : b;
-
-
-
-    const paths = (obj = {}, head = '', visited_paths = []) => {
-        for(let i in obj) {
-          if(Array.isArray(obj)) {
-            visited_paths.push(addDelimiter(head, obj[i]));
-          } else {
-            visited_paths.push(addDelimiter(head, i));
-          }
-
-          if(isObject(obj[i])) {
-            paths(obj[i], addDelimiter(head, i), visited_paths);
-          }
-        }
-        return visited_paths;
-    };
-
-    return paths(obj);
-}
 
 CustomFields.Typeahead.prototype.widgetCreate_ = function() {
   var div = Blockly.WidgetDiv.DIV;

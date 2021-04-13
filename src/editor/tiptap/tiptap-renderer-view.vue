@@ -18,7 +18,7 @@
 
 import "tiptap-vuetify/dist/main.css";
 
-import sanitizeHtml from "sanitize-html";
+import sanitizeHtml from "../../utils/sanitizeHTML"
 
 export default {
   components: {},
@@ -57,8 +57,20 @@ export default {
 };
 </script>
 
-<style lang="css">
+<style lang="scss">
+  $color-black: black;
+$color-white: white;
+
 .vjsf-tiptap .v-input__slot {
   display: block;
+}
+  .mention {
+  background: rgba($color-black, 0.1);
+  color: rgba($color-black, 0.6);
+  font-size: 0.8rem;
+  font-weight: bold;
+  border-radius: 5px;
+  padding: 0.2rem 0.5rem;
+  white-space: nowrap;
 }
 </style>
