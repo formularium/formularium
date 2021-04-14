@@ -9,27 +9,30 @@
     :required="required"
     class="vjsf-tiptap"
   >
-    <div       v-if="!disabled" class="page"
->
-    <tiptap-vuetify
-      :value="sanitizedHtml"
-      :extensions="extensions"
+    <div v-if="!disabled" class="page">
+      <tiptap-vuetify
+        :value="sanitizedHtml"
+        :extensions="extensions"
         :native-extensions="nativeExtensions"
-      v-on="{ ...on, input }"
-    />
+        v-on="{ ...on, input }"
+      />
       <div class="suggestion-list" v-show="showSuggestions" ref="suggestions">
-      <template v-if="hasResults">
-        <div
-          v-for="(user, index) in filteredUsers"
-          :key="user.id"
-          class="suggestion-list__item"
-          :class="{ 'is-selected': navigatedUserIndex === index }"
-          @click="selectVariable(user)"
-        >{{ user.name }}</div>
-      </template>
-      <div v-else class="suggestion-list__item is-empty">No Variables found</div>
+        <template v-if="hasResults">
+          <div
+            v-for="(user, index) in filteredUsers"
+            :key="user.id"
+            class="suggestion-list__item"
+            :class="{ 'is-selected': navigatedUserIndex === index }"
+            @click="selectVariable(user)"
+          >
+            {{ user.name }}
+          </div>
+        </template>
+        <div v-else class="suggestion-list__item is-empty">
+          No Variables found
+        </div>
+      </div>
     </div>
-  </div>
 
     <div v-html="sanitizedHtml" v-else></div>
   </v-input>
@@ -53,21 +56,18 @@ import {
   Code,
   HorizontalRule,
   Paragraph,
-  HardBreak,
-
+  HardBreak
 } from "tiptap-vuetify";
 
-import {
-  Mention,
-} from "tiptap-extensions";
+import { default as TemplateTag } from "./templateTags";
 
 import Fuse from "fuse.js";
 import "tiptap-vuetify/dist/main.css";
 
-import tippy, { sticky } from 'tippy.js';
-import 'tippy.js/dist/tippy.css';
+import tippy, { sticky } from "tippy.js";
+import "tippy.js/dist/tippy.css";
 
-import sanitizeHtml from "../../utils/sanitizeHTML"
+import sanitizeHtml from "../../utils/sanitizeHTML";
 import propertiesToArray from "../../utils/propertiesToArray";
 
 export default {
@@ -110,95 +110,96 @@ export default {
         Code,
         HorizontalRule,
         Paragraph,
-        HardBreak,
+        HardBreak
       ],
       nativeExtensions: [
-        new Mention({
-            matcher: {
-              char: "{{"
-            },
+        new TemplateTag({
+          matcher: {
+            char: "{{"
+          },
 
-            // a list of all suggested items
-            items: () => this.addIdsToSuggestions(propertiesToArray(window.jsonSchemaPaths)),
-            // is called when a suggestion starts
-            onEnter: ({ items, query, range, command, virtualNode }) => {
-              this.query = query;
-              this.filteredUsers = items;
-              this.suggestionRange = range;
-              this.renderPopup(virtualNode);
-              // we save the command for inserting a selected mention
-              // this allows us to call it inside of our custom popup
-              // via keyboard navigation and on click
-              this.insertMention = command;
-              this.isList = false;
-            },
-            // is called when a suggestion has changed
-            onChange: ({ items, query, range, virtualNode }) => {
-              this.query = query;
-              this.filteredUsers = items;
-              this.suggestionRange = range;
-              this.navigatedUserIndex = 0;
-              this.renderPopup(virtualNode);
-            },
-            // is called when a suggestion is cancelled
-            onExit: () => {
-              // reset all saved values
-              this.query = null;
-              this.filteredUsers = [];
-              this.suggestionRange = null;
-              this.navigatedUserIndex = 0;
-              this.destroyPopup();
-              this.isList = false;
-            },
-            // is called on every keyDown event while a suggestion is active
-            onKeyDown: ({ event }) => {
-              // pressing up arrow
-              if (event.keyCode === 38) {
-                this.upHandler();
-                return true;
-              }
-              // pressing down arrow
-              if (event.keyCode === 40) {
-                this.downHandler();
-                return true;
-              }
-              // pressing enter
-              if (event.keyCode === 13) {
-                this.enterHandler();
-                return true;
-              }
-
-              return false;
-            },
-            // is called when a suggestion has changed
-            // this function is optional because there is basic filtering built-in
-            // you can overwrite it if you prefer your own filtering
-            // in this example we use fuse.js with support for fuzzy search
-            onFilter: (items, query) => {
-              if(query.includes("#")) {
-                this.isList = true;
-              } else {
-                this.isList = false
-              }
-
-              for(let i in items) {
-                items[i].isList = this.isList;
-              }
-
-              query = query.replace("#", "");
-              if (!query) {
-                return items;
-              }
-
-              const fuse = new Fuse(items, {
-                threshold: 0.2,
-                keys: ["name"]
-              });
-              console.log(fuse.search(query).map(item => item.item))
-
-              return fuse.search(query).map(item => item.item);
+          // a list of all suggested items
+          items: () =>
+            this.addIdsToSuggestions(propertiesToArray(window.jsonSchemaPaths)),
+          // is called when a suggestion starts
+          onEnter: ({ items, query, range, command, virtualNode }) => {
+            this.query = query;
+            this.filteredUsers = items;
+            this.suggestionRange = range;
+            this.renderPopup(virtualNode);
+            // we save the command for inserting a selected mention
+            // this allows us to call it inside of our custom popup
+            // via keyboard navigation and on click
+            this.insertMention = command;
+            this.isList = false;
+          },
+          // is called when a suggestion has changed
+          onChange: ({ items, query, range, virtualNode }) => {
+            this.query = query;
+            this.filteredUsers = items;
+            this.suggestionRange = range;
+            this.navigatedUserIndex = 0;
+            this.renderPopup(virtualNode);
+          },
+          // is called when a suggestion is cancelled
+          onExit: () => {
+            // reset all saved values
+            this.query = null;
+            this.filteredUsers = [];
+            this.suggestionRange = null;
+            this.navigatedUserIndex = 0;
+            this.destroyPopup();
+            this.isList = false;
+          },
+          // is called on every keyDown event while a suggestion is active
+          onKeyDown: ({ event }) => {
+            // pressing up arrow
+            if (event.keyCode === 38) {
+              this.upHandler();
+              return true;
             }
-          })
+            // pressing down arrow
+            if (event.keyCode === 40) {
+              this.downHandler();
+              return true;
+            }
+            // pressing enter
+            if (event.keyCode === 13) {
+              this.enterHandler();
+              return true;
+            }
+
+            return false;
+          },
+          // is called when a suggestion has changed
+          // this function is optional because there is basic filtering built-in
+          // you can overwrite it if you prefer your own filtering
+          // in this example we use fuse.js with support for fuzzy search
+          onFilter: (items, query) => {
+            if (query.includes("#")) {
+              this.isList = true;
+            } else {
+              this.isList = false;
+            }
+
+            for (let i in items) {
+              items[i].isList = this.isList;
+            }
+
+            query = query.replace("#", "");
+            if (!query) {
+              return items;
+            }
+
+            const fuse = new Fuse(items, {
+              threshold: 0.2,
+              keys: ["name"]
+            });
+            console.log(fuse.search(query).map(item => item.item));
+
+            return fuse.search(query).map(item => item.item);
+          }
+        })
       ],
       query: null,
       suggestionRange: null,
@@ -206,7 +207,7 @@ export default {
       navigatedUserIndex: 0,
       insertMention: () => {},
       observer: null
-    }
+    };
   },
   computed: {
     sanitizedHtml() {
@@ -221,18 +222,16 @@ export default {
     }
   },
   methods: {
-
     // suggestions need ids so we add them ;-)
     addIdsToSuggestions(suggestions) {
       let result = [];
-      for(let s in suggestions) {
+      for (let s in suggestions) {
         result.push({
           name: suggestions[s],
           id: s
         });
       }
-      return result
-
+      return result;
     },
 
     input(value) {
@@ -269,14 +268,13 @@ export default {
     // we have to replace our suggestion text with a mention
     // so it's important to pass also the position of your suggestion text
     selectVariable(variable) {
-      if(variable.isList === false)
-      {
+      if (variable.isList === false) {
         this.insertMention({
           range: this.suggestionRange,
           attrs: {
             id: variable.id,
             //we need to add whitespace here because of https://github.com/ueberdosis/tiptap/issues/932
-            label: variable.name+"}} "
+            label: variable.name + "}} "
           }
         });
       } else {
@@ -285,7 +283,7 @@ export default {
           attrs: {
             id: variable.id,
             //we need to add whitespace here because of https://github.com/ueberdosis/tiptap/issues/932
-            label: "#"+variable.name+"}} "
+            label: "#" + variable.name + "}} "
           }
         });
 
@@ -294,7 +292,7 @@ export default {
           attrs: {
             id: variable.id,
             //we need to add whitespace here because of https://github.com/ueberdosis/tiptap/issues/932
-            label: "/"+variable.name+"}} "
+            label: "/" + variable.name + "}} "
           }
         });
       }
@@ -307,26 +305,26 @@ export default {
     renderPopup(node) {
       const { x, y } = node.getBoundingClientRect();
       if (x === 0 && y === 0) {
-        return
+        return;
       }
       if (this.popup) {
-        return
+        return;
       }
       // ref: https://atomiks.github.io/tippyjs/v6/all-props/
-      this.popup = tippy('.page', {
+      this.popup = tippy(".page", {
         getReferenceClientRect: () => node.getBoundingClientRect(),
         appendTo: () => document.body,
         interactive: true,
         sticky: true, // make sure position of tippy is updated when content changes
         plugins: [sticky],
         content: this.$refs.suggestions,
-        trigger: 'mouseenter', // manual
+        trigger: "mouseenter", // manual
         showOnCreate: true,
-        theme: 'dark',
-        placement: 'top-start',
+        theme: "dark",
+        placement: "top-start",
         inertia: true,
-        duration: [400, 200],
-      })
+        duration: [400, 200]
+      });
     },
     destroyPopup() {
       if (this.popup && this.popup.length > 0) {
@@ -338,11 +336,8 @@ export default {
 };
 </script>
 
-
-
 <style lang="scss">
-
-  .vjsf-tiptap .v-input__slot {
+.vjsf-tiptap .v-input__slot {
   display: block;
 }
 $color-black: black;
@@ -386,7 +381,7 @@ $color-white: white;
   }
 }
 
-.tippy-box[data-theme~=dark] {
+.tippy-box[data-theme~="dark"] {
   background-color: $color-black;
   padding: 0;
   font-size: 1rem;
@@ -394,6 +389,4 @@ $color-white: white;
   color: $color-white;
   border-radius: 5px;
 }
-
-
-  </style>
+</style>
