@@ -6,6 +6,7 @@ export const TemplateTagSuggestion = Node.create({
     HTMLAttributes: {
       "data-remove-rendering": "true"
     },
+    scope: null,
     suggestion: {
       char: "{{",
       command: ({ editor, range, props }) => {

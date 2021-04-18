@@ -21,6 +21,7 @@
                 .undo()
                 .run()
             "
+            :disabled="!editor.can().undo()"
             :class="{ 'tiptap-vuetify-editor__action-render-btn': true }"
           >
             <v-icon>mdi-undo</v-icon>
@@ -29,6 +30,7 @@
             small
             icon
             type="button"
+            :disabled="!editor.can().redo()"
             @click="
               editor
                 .chain()
@@ -57,6 +59,34 @@
             }"
           >
             <v-icon>mdi-format-bold</v-icon>
+          </v-btn>
+          <v-btn
+            small
+            icon
+            type="button"
+            @click="
+              editor.commands.insertContent({
+                type: 'templateIterator',
+                attrs: {},
+                content: [
+                  {
+                    type: 'paragraph',
+                    content: [
+                      {
+                        type: 'text',
+                        text: ' '
+                      }
+                    ]
+                  }
+                ]
+              })
+            "
+            :class="{
+              'v-btn--active': editor.isActive('templateIterator'),
+              'tiptap-vuetify-editor__action-render-btn': true
+            }"
+          >
+            <v-icon>mdi-loop</v-icon>
           </v-btn>
           <v-btn
             small
@@ -295,6 +325,7 @@ import "tiptap-vuetify/dist/main.css";
 import MentionList from "./MentionList";
 import tippy from "tippy.js";
 import { TemplateTagSuggestion } from "./templateTagSuggestion";
+import TemplateIterator from "./templateIteratorTag.js";
 
 import propertiesToArray from "../../utils/propertiesToArray";
 
@@ -342,12 +373,14 @@ export default {
     this.editor = new Editor({
       extensions: [
         ...defaultExtensions(),
+        TemplateIterator,
         TemplateTagSuggestion.configure({
           HTMLAttributes: {
             class: "mention"
           },
           suggestion: {
             items: query => {
+              console.log(this);
               return propertiesToArray(window.jsonSchemaPaths)
                 .filter(item =>
                   item.toLowerCase().startsWith(query.toLowerCase())

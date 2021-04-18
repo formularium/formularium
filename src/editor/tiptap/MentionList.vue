@@ -19,7 +19,6 @@ export default {
       type: Array,
       required: true
     },
-
     command: {
       type: Function,
       required: true
