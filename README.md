@@ -10,8 +10,8 @@ So we decided to build open-source concepts and software to allow municipalities
 
 ### Features
 - Form editor based on the visual programming language blockly. This allows you to build almost any kind of validation/routing logic into your forms without writing a single line of code. 
-- Security by Design with End-to-End encryption. Every form gets PGP-Encrypted before it will be submitted to the backend. Only the administrative staff can decrypt form data locally.
-- Prove of transmission: The applicant get's a digitally signed receipt that the server has received their form.
+- Security by Design with End-to-End encryption. Every form gets PGP-encrypted before it will be submitted to the backend. Only the administrative staff can decrypt form data locally.
+- Proof of transmission: The applicant gets a digitally signed receipt that the server has received their form.
 
 ### High Level Architecture
 ![High Level Architecture](docs/HLA.png)
